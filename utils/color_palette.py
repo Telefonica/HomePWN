@@ -33,7 +33,7 @@ class ColorSelected(object):
         """
         if ColorSelected.__instance is None:
             ColorSelected.__instance = object.__new__(cls)
-            ColorSelected.__instance.theme = theme
+            ColorSelected.__instance.theme = colors_terminal["dark"]
         if(theme != None):
             ColorSelected.__instance.theme = theme
         return ColorSelected.__instance

@@ -2,6 +2,7 @@ import requests
 import pychromecast
 from modules._module import Module
 from utils.custom_print import print_info, print_error
+from utildata.dataset_options import Option
 
 
 
@@ -12,8 +13,7 @@ class HomeModule(Module):
                        "Description": "Module Description",
                        "Author": "@author"}
 
-        # -----------name-----default_value--description--required?
-        options = {"option1": [None, "Option description", True]}
+        options = {"option1": Option.create(name="option_name", value="default value", required="required?")}
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
