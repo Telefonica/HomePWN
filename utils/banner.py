@@ -7,7 +7,7 @@ from time import sleep
 # Info display
 info = '''
 
-                 ☠  HomePwn - IoT Hacking ☠                 
+       ☠ HomePwn - IoT Pentesting & Ethical Hacking ☠                 
 
       Created with ♥  by: 'Ideas Locas (CDO Telefonica)'        
                                                           

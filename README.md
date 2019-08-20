@@ -1,7 +1,7 @@
 ![Supported Python versions](https://img.shields.io/badge/python-3.6+-blue.svg?style=flat-square&logo=python)
 ![License](https://img.shields.io/badge/license-GNU-green.svg?style=flat-square&logo=gnu)
 
-# **HomePwn - IoT Hacking**
+# **HomePwn - IoT Pentesting & Ethical Hacking**
 
 ```
 .__                         __________                
@@ -12,7 +12,7 @@
      \/             \/     \/                      \/ 
 
 
-                 ☠  HomePwn - IoT Hacking ☠                 
+       ☠ HomePwn - IoT Pentesting & Ethical Hacking ☠                 
 
       Created with ♥  by: 'Ideas Locas (CDO Telefonica)'    
 ```
@@ -108,6 +108,6 @@ This project is licensed under the GNU General Public License - see the [LICENSE
 
 # Disclaimer!
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE (for educational purpose only) IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 This software doesn't have a QA Process.
