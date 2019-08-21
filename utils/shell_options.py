@@ -54,7 +54,7 @@ class ShellOptions:
             
     def del_module_options(self):
         self.shell_options["show"] = ["banner"]
-        for c in ["set", "unset", "show", "back", "run"]:
+        for c in ["set", "unset", "show", "back", "run", "global"]:
             del self.shell_options[c]
     
     # Search tool modules in folder 'modules'
