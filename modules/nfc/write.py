@@ -1,7 +1,6 @@
-# Adapting script from 
-# Thanks to 
+# Adapting script from https://nfcpy.readthedocs.io/en/latest/
+# Thanks to nehpetsde
 # Author: @lucferbux
-
 from modules._module import Module
 from utils.custom_print import print_info, print_error, print_msg
 from utildata.dataset_options import Option
@@ -56,6 +55,14 @@ class HomeModule(Module):
         self.write_record(record_type, reader=reader, data=data, append=append)
 
     def write_record(self, record_type, reader="usb", data="", append=False):
+        """Writes a record in the NDEF format with a given reader
+        
+        Args:
+            record_type ([type]): Type of record (text, uri or smartposter)
+            reader (str, optional): Name of the reader you want to use. Defaults to "usb".
+            data (str, optional): Data to record. Defaults to "".
+            append (bool, optional): Wether the data is appended or overwritten. Defaults to False.
+        """
         with nfc.ContactlessFrontend(reader) as clf:
             target = clf.sense(RemoteTarget('106A'), RemoteTarget(
                 '106B'), RemoteTarget('212F'))

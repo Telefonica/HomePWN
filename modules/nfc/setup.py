@@ -1,5 +1,5 @@
-# Adapting script from 
-# Thanks to 
+# Adapting script from https://nfcpy.readthedocs.io/en/latest/
+# Thanks to nehpetsde
 # Author: @lucferbux
 from modules._module import Module
 from utils.custom_print import print_info, print_ok_raw, print_error, print_body
