@@ -29,9 +29,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         reader = self.args.get("reader", "usb")
         verbose = str(self.args.get("verbose", "False")).lower() == "true"
         self.write_record(reader=reader, verbose=verbose)

@@ -6,6 +6,9 @@ from utils.color_palette import ColorSelected
 
 def print_error(msg, start="", end=""):
     print_formatted_text(HTML(f"<{ColorSelected().theme.warn}>{start}[!] {msg}{end}</{ColorSelected().theme.warn}>"))
+
+def print_error_raw(msg, start="", end=""):
+    print_formatted_text(HTML(f"<{ColorSelected().theme.warn}>{start}{msg}{end}</{ColorSelected().theme.warn}>"))
     
 def print_info(msg, start="", end=""):
     print_formatted_text(HTML(f"<{ColorSelected().theme.accent}>{start}{msg}{end}</{ColorSelected().theme.accent}>"))

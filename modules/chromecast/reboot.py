@@ -9,8 +9,8 @@ from utildata.dataset_options import Option
 class HomeModule(Module):
 
     def __init__(self):
-        information = {"Name": "Reset a Chromecast",
-                       "Description": "Factory reset for Chromecast",
+        information = {"Name": "Reboot a Chromecast",
+                       "Description": "Reboot the specified chromecast",
                        "Author": "@pablogonzalezpe, @josueencinar"}
 
         # -----------name-----default_value--description--required?

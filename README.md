@@ -1,7 +1,7 @@
 ![Supported Python versions](https://img.shields.io/badge/python-3.6+-blue.svg?style=flat-square&logo=python)
 ![License](https://img.shields.io/badge/license-GNU-green.svg?style=flat-square&logo=gnu)
 
-# **HomePwn - IoT Pentesting & Ethical Hacking**
+# **HomePwn - Swiss Army Knife for Pentesting of IoT Devices**
 
 ```
 .__                         __________                
@@ -84,7 +84,10 @@ Here are some videos to see how the tool works.
 [![HomePwn. NFC Clone](https://img.youtube.com/vi/ZLas04ZCTLU/0.jpg)](https://www.youtube.com/watch?v=ZLas04ZCTLU)
 
 ### **HomePwn. BLE capture on PCAP file (sniffing)**
-[![homePwn -](https://img.youtube.com/vi/vw9nr584PJQ/0.jpg)](https://www.youtube.com/watch?v=vw9nr584PJQ)
+[![HomePwn. BLE capture on PCAP file (sniffing)](https://img.youtube.com/vi/vw9nr584PJQ/0.jpg)](https://www.youtube.com/watch?v=vw9nr584PJQ)
+
+### **HomePwn. QR Options hack**
+[![HomePwn. QR Options hack](https://img.youtube.com/vi/ta1DbnWOF8M/0.jpg)](https://www.youtube.com/watch?v=ta1DbnWOF8M)
 
 # Authors
 

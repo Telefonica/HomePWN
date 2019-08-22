@@ -12,7 +12,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Wifi Sniffing",
-                       "Description": "Discover stations connected to access points",
+                       "Description": "Discover stations connected to access points by sniffing",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
@@ -32,12 +32,11 @@ class HomeModule(Module):
         s_options.add_set_option_values("vendor", list(mac_devices.keys()))
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
         dev = mac_devices.get(str(self.args["vendor"]), None)
         if dev:
             dev = dev["macs"]
-        if not  is_root:
-            return
         print_info("Use CTRL^C to end this task")
         sn = Sniffing(iface=self.args["iface"], channel=self.args["channel"], show_aps=False, filter_macs=dev)
         sn.start_sniffing()

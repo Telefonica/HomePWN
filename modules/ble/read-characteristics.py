@@ -30,10 +30,8 @@ class HomeModule(Module):
         s_options.add_set_option_values("type", ["random", "public"])
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        
-        if not is_root():
-            return
         ble_device = BLE(self.args["bmac"], self.args["type"])
 
         attempt = 1

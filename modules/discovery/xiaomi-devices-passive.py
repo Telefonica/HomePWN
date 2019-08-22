@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Discovery Xiaomi devices ",
-                       "Description": "Discover Xiaomi devices (Passive)",
+                       "Description": "Discover Xiaomi devices (Passive mode)",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?

@@ -10,10 +10,11 @@ from utildata.dataset_options import Option
 class HomeModule(Module):
 
     def __init__(self):
-        information = {"Name": "Launch Bluetooth Service",
-                       "Description": "Launch a bluetooth service",
+        information = {"Name": "DirtiTooth",
+                       "Description": "Takes advantage of the management of the profiles causing impact on the privacy of users who use Bluetooth technology daily",
                        "Author": "@josueencinar",
-                       "privileges": "root",}
+                       "privileges": "root",
+                       "Target": "iOS 11.2 and earlier"}
 
         # -----------name-----default_value--description--required?
         options = {"bmac": Option.create(name="bmac", required=True),
@@ -24,9 +25,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         print_info("Launching Service")
         res = start_dirtytooth(self.args["bmac"], self.args["path"])
         if res == 1:

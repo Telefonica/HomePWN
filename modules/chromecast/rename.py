@@ -14,7 +14,7 @@ class HomeModule(Module):
 
         # -----------name-----default_value--description--required?
         options = {"rhost": Option.create(name="rhost", required=True),
-                   "name": Option.create(name="name", vale="Pwned", required=True, 
+                   "name": Option.create(name="name", value="Pwned", 
                             description="New name to set", required=True)}
 
         # Constructor of the parent class

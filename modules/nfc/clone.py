@@ -27,9 +27,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         dump = Dump()
         load = Load()
         reader_v = ["reader", self.args["reader"]]

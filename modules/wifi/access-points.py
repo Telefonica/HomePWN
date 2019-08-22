@@ -8,7 +8,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Wifi Discover Access Points",
-                       "Description": "Discover Access Points",
+                       "Description": "This module allows us to see the access points",
                         "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?

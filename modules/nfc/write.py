@@ -38,9 +38,8 @@ class HomeModule(Module):
         s_options.add_set_option_values("ndef_type", ["text", "uri", "smartposter"])
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         ndef_types = {
             'text': self.set_text_record,
             'uri': self.set_uri_record,

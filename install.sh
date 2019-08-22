@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Check root user
 if [ $EUID -ne 0 ]
 then
@@ -29,14 +30,19 @@ apt-get install -y --no-install-recommends gcc libcairo2-dev gir1.2-gtk-3.0
 apt-get install -y --no-install-recommends libffi-dev libssl-dev
 apt-get install -y --no-install-recommends libcups2-dev
 apt-get install -y --no-install-recommends libzbar0
+apt-get install -y --no-install-recommends libccid pcscd libpcsclite-dev libpcsclite1 pcsc-tools
 
 # Install nOBEX
 wget https://github.com/nccgroup/nOBEX/archive/master.zip && unzip master.zip && rm master.zip 
 cd ./nOBEX-master
-python3 setup.py install
 
-cd ..
-rm -r nOBEX-master
+echo ${PWD##*/}
+if [ ${PWD##*/} == "nOBEX-master" ] 
+then
+    python3 setup.py install
+    cd ..
+    rm -r nOBEX-master
+fi
 
 read  -p "Do you want to create a virtual environment? (y/n): " follow
 

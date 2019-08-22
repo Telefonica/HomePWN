@@ -9,8 +9,8 @@ class HomeModule(Module):
     def __init__(self):
         conf.verb = 0
         conf.L3socket=L3RawSocket
-        information = {"Name": "SYN Scan",
-                       "Description": "Discover open ports",
+        information = {"Name": "ARP Scan",
+                       "Description": "Performs ARP Scan to find active IPs",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
