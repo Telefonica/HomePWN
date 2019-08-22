@@ -11,8 +11,8 @@ from utildata.dataset_options import Option
 class HomeModule(Module):
 
     def __init__(self):
-        information = {"Name": "Capture Bluetooth Packets ",
-                       "Description": "Capture Bluetooth Packets with Scapy and save it in a .pcap",
+        information = {"Name": "Read pcap",
+                       "Description": "Use this module to read pcap files",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?

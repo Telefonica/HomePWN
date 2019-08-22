@@ -21,9 +21,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root:
-            return
         proc = Popen(f"hciconfig {self.args['iface']} reset".split(" "), stdout=PIPE, stderr=PIPE)
         data =  proc.communicate()
         if len(data[1]) > 0:

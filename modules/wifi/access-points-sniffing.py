@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Wifi Sniffing",
-                       "Description": "Discover Access Points",
+                       "Description": "Discover nearby access points by sniffing",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
@@ -25,9 +25,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not  is_root:
-            return
         print_info("Use CTRL^C to end this task")
         sn = Sniffing(iface=self.args["iface"], channel=self.args["channel"], show_stations=False)
         sn.start_sniffing()

@@ -1,7 +1,6 @@
 from scapy.all import *
 from modules._module import Module
 from utils.custom_print import print_info
-from utils.check_root import is_root
 from utils.monitor import Sniffing
 from utildata.mac_vendors import mac_devices
 from utils.shell_options import ShellOptions
@@ -11,8 +10,8 @@ from utildata.dataset_options import Option
 class HomeModule(Module):
 
     def __init__(self):
-        information = {"Name": "Wifi Sniffing",
-                       "Description": "Discover stations connected to access points",
+        information = {"Name": "Search printers",
+                       "Description": "DDiscover nearby printers that have a raised access point",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 

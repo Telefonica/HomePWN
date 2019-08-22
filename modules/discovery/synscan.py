@@ -12,7 +12,7 @@ class HomeModule(Module):
         conf.verb = 0
         conf.L3socket=L3RawSocket
         information = {"Name": "SYN Scan",
-                       "Description": "Discover open ports",
+                       "Description": "Discover open ports with a SYN Scan",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
@@ -27,9 +27,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         try:
             if self.args["timeout"]:
                 self.args["timeout"] = int(self.args["timeout"])

@@ -8,7 +8,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Discovery Xiaomi devices ",
-                       "Description": "Discover Xiaomi devices (Active)",
+                       "Description": "Discover Xiaomi devices (Active mode)",
                        "Token_info": "Devices with the token all 0 or f are already paired",
                        "Author": "@josueencinar"}
 

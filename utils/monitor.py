@@ -373,9 +373,12 @@ class Sniffing:
                     }
                     if self.show_stations:
                         # Free API 1000 requests per day (Get mac vendor)
-                        response = requests.get("https://api.macvendors.com/"+addr)
-                        if response.status_code == 200:
-                            data["vendor"] = response.text[0:12]
+                        try:
+                            response = requests.get("https://api.macvendors.com/"+addr)
+                            if response.status_code == 200:
+                                data["vendor"] = response.text[0:12]
+                        except:
+                            pass
                         
                         fill = 12 - len(data["vendor"])
                         if fill > 0:

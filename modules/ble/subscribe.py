@@ -14,7 +14,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "BLE subscribe",
-                       "Description": "Subscribing to a ble device",
+                       "Description": "Subscribing to a BLE device",
                        "privileges": "root",
                        "OS": "Linux",
                        "Author": "@josueencinar"}
@@ -42,9 +42,8 @@ class HomeModule(Module):
         s_options.add_set_option_values("encode", ["ascii", "hex"])
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root:
-            return
         new_process_function(self._subscribe, name="Subscribe_ble")
 
 

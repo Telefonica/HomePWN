@@ -37,10 +37,8 @@ class HomeModule(Module):
         s_options.add_set_option_values("type", ["random", "public"])
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root:
-            return
-
         bmac = self.args["bmac"]
         data = self._transform_data(self.args["encode"], self.args["data"])
         if not data:

@@ -11,7 +11,7 @@ class HomeModule(Module):
     def __init__(self):
 
         information = {"Name": "Send Youtube Video",
-                       "Description": "send a youtube video to chromecast (v1)",
+                       "Description": "Send a youtube video to chromecast (v1)",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?

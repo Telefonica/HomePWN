@@ -8,8 +8,8 @@ from utildata.dataset_options import Option
 class HomeModule(Module):
 
     def __init__(self):
-        information = {"Name": "Wifi Sniffing",
-                       "Description": "Discover Access Points",
+        information = {"Name": "Airptiny",
+                       "Description": "This module will generate avahi .service files for shared CUPS printers",
                        "Author": "Timothy J Fontaine",
                        "Module Author": "@josueencinar",
                        "Reference": "https://github.com/tjfontaine/airprint-generate/blob/master/airprint-generate.py"}

@@ -28,9 +28,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         print_info("Searching bluetooth devices to check MAC...")
         devices  = discover_devices(lookup_names=True, lookup_class=True)
         device_name = None

@@ -22,9 +22,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         print("Checking...\n")
         conf.verb = 0
         conf.L3socket=L3RawSocket

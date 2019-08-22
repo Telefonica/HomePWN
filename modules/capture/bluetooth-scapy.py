@@ -24,9 +24,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         if VERSION <= "2.4.2":
             print_error("You need a 2.4.3 or higher version of scapy")
             return

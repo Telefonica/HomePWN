@@ -29,9 +29,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         file = self.args.get("file", "tag.ndef")
         reader = self.args.get("reader", "usb")
         path = f"./files/{file}"

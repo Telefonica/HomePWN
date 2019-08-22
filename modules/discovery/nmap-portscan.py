@@ -29,9 +29,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         if not has_nmap:
             print_error("To launch this module install nmap (sudo apt install nmap)")
             return

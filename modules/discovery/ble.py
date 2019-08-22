@@ -9,8 +9,8 @@ from utildata.dataset_options import Option
 class HomeModule(Module):
 
     def __init__(self):
-        information = {"Name": "Discovery Bluetooth ",
-                       "Description": "Discover devices with active Bluettoth",
+        information = {"Name": "Discovery BLE devices ",
+                       "Description": "Discover devices with active ble",
                        "privileges": "root",
                        "OS": "Linux",
                        "Author": "@josueencinar"}
@@ -23,9 +23,8 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
     # This module must be always implemented, it is called by the run option
+    @is_root
     def run(self):
-        if not is_root():
-            return
         print("Searching BLE devices...\n")
         try:
             timeout = int(self.args["timeout"])

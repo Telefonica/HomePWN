@@ -1,3 +1,4 @@
+pytest
 requests>=2.0
 protobuf>=3.0.0
 zeroconf>=0.21.0
@@ -17,3 +18,7 @@ opencv-python
 nfcpy
 pyzbar
 qrcode[pil]
+readchar
+pyscard
+evdev
+python-uinputce
