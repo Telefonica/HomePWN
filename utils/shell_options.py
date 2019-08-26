@@ -16,6 +16,7 @@ class ShellOptions:
         if ShellOptions.__instance == None:
             ShellOptions.__instance = self
             modules_list = self._get_list_modules()
+            self.options_to_del = ["set", "unset", "show", "back", "run", "global"]
             self.shell_options = {  
                 "load": modules_list,
                 "help": [],
@@ -43,7 +44,7 @@ class ShellOptions:
             print(e)
     
     # To extend options to Autocomplete commands
-    def add_module_options(self, options_name=[]):
+    def add_module_options(self, options_name=[], new_functions=[]):
         self.shell_options["set"] = self.shell_options["global"]  = {}
         self.shell_options["unset"] = options_name
         for name in options_name:
@@ -51,11 +52,19 @@ class ShellOptions:
         self.shell_options["run"] = []
         self.shell_options["back"] = []
         self.shell_options["show"] = ["options", "info"]
+        # Update new functions
+        for f in new_functions:
+            if f not in list(self.shell_options.keys()):
+                self.shell_options[f] = []
+                self.options_to_del.append(f)
             
     def del_module_options(self):
         self.shell_options["show"] = ["banner"]
-        for c in ["set", "unset", "show", "back", "run", "global"]:
-            del self.shell_options[c]
+        for c in self.options_to_del:
+            try:
+                del self.shell_options[c]
+            except:
+                self.options_to_del.remove(c)
     
     # Search tool modules in folder 'modules'
     def _get_list_modules(self, pwd="./modules"):

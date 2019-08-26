@@ -10,12 +10,12 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Wifi Sniffing",
-                       "Description": "Discover nearby access points by sniffing",
+                       "Description": "With this module you can discover nearby access points by sniffing.",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
-        options = {"iface": Option.create(name="iface", required=True),
+        options = {"iface": Option.create(name="iface", required=True, description="Network Interface (that allows promiscuous mode)"),
                    "channel": Option.create(name="channel")}
 
         self.ap_dict = {}
@@ -24,7 +24,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         print_info("Use CTRL^C to end this task")

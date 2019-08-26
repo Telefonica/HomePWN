@@ -89,6 +89,12 @@ Here are some videos to see how the tool works.
 ### **HomePwn. QR Options hack**
 [![HomePwn. QR Options hack](https://img.youtube.com/vi/ta1DbnWOF8M/0.jpg)](https://www.youtube.com/watch?v=ta1DbnWOF8M)
 
+### **HomePwn. Apple BLE Discovery**
+[![HomePwn. Apple BLE Discovery](https://img.youtube.com/vi/xOU34op7Gls/0.jpg)](https://www.youtube.com/watch?v=xOU34op7Gls)
+
+### **HomePwn. Xiaomi IoT Advertisement**
+[![HomePwn. Xiaomi IoT Advertisement](https://img.youtube.com/vi/[[ID]]/0.jpg)](https://www.youtube.com/watch?v=[[ID]])
+
 # Authors
 
 This project has been developed by the team of 'Ideas Locas' (CDO - Telefónica). To contact the authors:

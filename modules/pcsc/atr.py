@@ -22,13 +22,13 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Display ATR",
-                       "Description": "Display the ATR of inserted cards",
+                       "Description": "This module display the ATR (Answer To Reset) of inserted cards.",
                        "OS": "Linux",
                        "Author": "@lucferbux"}
 
         # -----------name-----default_value--description--required?
         options = {
-            'reader': Option.create(name="reader", value="usb", required=True, description="reader used to write the tag"),
+            'reader': Option.create(name="reader", value="usb", required=True, description="reader used to read the tag"),
             'verbose': Option.create(name="verbose", value=False, description="verbose mode"),
         }
 
@@ -36,7 +36,7 @@ class HomeModule(Module):
         super(HomeModule, self).__init__(information, options)
 
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         reader = self.args.get("reader", "usb")

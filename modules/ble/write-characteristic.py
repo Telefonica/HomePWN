@@ -11,7 +11,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "BLE write a characteristic",
-                       "Description": "Write a characteristic in a BLE device (by uuid)",
+                       "Description": "This module allows you to write content encoded in the feature specified by the UUID. The feature must be writable to proceed.",
                        "privileges": "root",
                        "OS": "Linux",
                        "Author": "@josueencinar"}
@@ -25,8 +25,6 @@ class HomeModule(Module):
                    "wait": Option.create(name="wait", value=0, required=True, description='seconds to wait connected after writing')
                    }
 
-
-        
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
@@ -36,7 +34,7 @@ class HomeModule(Module):
         s_options.add_set_option_values("encode", ["ascii", "hex"])
         s_options.add_set_option_values("type", ["random", "public"])
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         bmac = self.args["bmac"]

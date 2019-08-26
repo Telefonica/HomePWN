@@ -2,7 +2,7 @@ import importlib
 from utils.custom_print import print_error, print_info, print_ok
 from utils.custom_exception import exception
 
-@exception("Error importing the module")
+#@exception("Error importing the module")
 def load_module(path):
     """Custom function to load a new module
     

@@ -15,7 +15,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "QR Reader Webcam",
-                       "Description": "Reads the information about a qr through the Webcam",
+                       "Description": "This module allows you to read QR codes through the Webcam. It gives you the option to save this code in a file.",
                        "OS": "Linux",
                        "Author": "@lucferbux"}
 
@@ -28,7 +28,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         verbose = str(self.args.get("verbose", "False")).lower() == "true"
         save_capture = str(self.args.get("save_capture", "False")).lower() == "true"

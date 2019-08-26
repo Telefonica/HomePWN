@@ -11,14 +11,14 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Bluetooth MAC Spoofing",
-                       "Description": "Spoof a MAC Address with spooftooph",
+                       "Description": "This module is designed to allow you spoof a bluetooth device using Spooftooph. If you want to create a bluetooth service with the features of an active device near you, you must specify the name or bmac to find the device and extract the information. It is also possible to manually specify everything and 'invent' a bluetooth.",
                        "privileges": "root",
                        "OS": "Linux",
                        "Author": "@josueencinar",
                        "Reference": "https://github.com/pwnieexpress/pwn_plug_sources/tree/master/src/bluetooth/spooftooph/source"}
 
         # -----------name-----default_value--description--required?
-        options = {"name": Option.create(name="name", description="Device name"),
+        options = {"name": Option.create(name="name", description="Device name to spoof"),
                    "iface": Option.create(name="iface", value="hci0", required=True),
                    "bmac": Option.create(name="bmac", description="New device address"),
                    "class": Option.create(name="class",  description='Bluetooth class (Profile)')
@@ -27,7 +27,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         print_info("Searching bluetooth devices to check MAC...")

@@ -17,7 +17,7 @@ class HomeModule(Module):
         self.SSDP_MX = 2
         self.SSDP_TARGET = ("239.255.255.250", 1900)
         information = {"Name": "Discovery SSDP Services",
-                       "Description": "Launch me to discover things through SSDP",
+                       "Description": "Using this module you will be able to discover active devices through SSDP protocol.",
                        "Author": "@josueencinar, @pablogonzalezpe",
                        "Reference": "https://github.com/home-assistant/netdisco/blob/master/netdisco/ssdp.py"}
 
@@ -38,7 +38,7 @@ class HomeModule(Module):
             'HOST: {}:{}'.format(*self.SSDP_TARGET),
             '', '']).encode('utf-8')
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         """Send a message over the network to discover uPnP devices.
         Inspired in https://github.com/home-assistant/netdisco/blob/master/netdisco/ssdp.py

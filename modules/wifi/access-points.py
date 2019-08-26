@@ -8,7 +8,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Wifi Discover Access Points",
-                       "Description": "This module allows us to see the access points",
+                       "Description": "This module allows us to see the access points using 'access_points' library. No configuration required.",
                         "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
@@ -17,7 +17,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         scan = get_scanner()
         wifis = scan.get_access_points()

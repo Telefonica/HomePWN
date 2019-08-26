@@ -9,17 +9,17 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Video capture",
-                       "Description": "Capture video from an IP camera",
+                       "Description": "With this module it's possible to capture video from an IP camera.",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
         options = {"uri": Option.create(name="uri", required=True, 
-                        description="URI target to capture video")}
+                        description="URI target to capture video (example: rtsp://ip:port)")}
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         # https://stackoverflow.com/questions/49978705/access-ip-camera-in-python-opencv/51166331
         try:

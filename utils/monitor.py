@@ -148,7 +148,7 @@ class Sniffing:
             return iface
 
     def start_mon_mode(self, interface):
-        print_ok(f'Starting monitor mode off {interface}')
+        print_ok(f'Starting monitor mode: {interface}')
         try:
             os.system('ifconfig %s down' % interface)
             os.system('iwconfig %s mode monitor' % interface)

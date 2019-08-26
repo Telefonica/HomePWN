@@ -13,7 +13,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Launch Bluetooth Service",
-                       "Description": "Launch a bluetooth service",
+                       "Description": "Use this module if you want to create a Bluetooth service that users can connect to. It is necessary to specify the bluetooth interface to use and the profile you want to generate.",
                        "Author": "@josueencinar",
                        "privileges": "root",}
 
@@ -27,7 +27,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         hci = self.args["iface"]

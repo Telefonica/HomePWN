@@ -9,19 +9,19 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "QR Reader",
-                       "Description": "Reads the information about a reader",
+                       "Description": "This module allows you to read QR codes from a file.",
                        "OS": "Linux",
                        "Author": "@lucferbux"}
 
         options = {
-            'file': Option.create(name="file", value="qr.png", required=True, description="destination file"),
+            'file': Option.create(name="file", value="qr.png", required=True, description="source file"),
             'verbose': Option.create(name="verbose", value=False, description="verbose mode"),
         }
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         verbose = str(self.args.get("verbose", "False")).lower() == "true"
         path = self.args.get("file", "qr.png")

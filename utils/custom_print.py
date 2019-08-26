@@ -14,7 +14,7 @@ def print_info(msg, start="", end=""):
     print_formatted_text(HTML(f"<{ColorSelected().theme.accent}>{start}{msg}{end}</{ColorSelected().theme.accent}>"))
 
 def print_ok(msg, start="", end=""):
-    print_formatted_text(HTML(f"<{ColorSelected().theme.confirm}>[+] {start}{msg}{end}</{ColorSelected().theme.confirm}>"))
+    print_formatted_text(HTML(f"<{ColorSelected().theme.confirm}>{start}[+] {msg}{end}</{ColorSelected().theme.confirm}>"))
 
 def print_ok_raw(msg, start="", end=""):
     print_formatted_text(HTML(f"<{ColorSelected().theme.confirm}>{start}{msg}{end}</{ColorSelected().theme.confirm}>"))

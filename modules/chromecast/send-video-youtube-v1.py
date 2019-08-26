@@ -11,23 +11,18 @@ class HomeModule(Module):
     def __init__(self):
 
         information = {"Name": "Send Youtube Video",
-                       "Description": "Send a youtube video to chromecast (v1)",
+                       "Description": "The module allows you to send a youtube video to a version 1 chromecast.",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
-        options = {
-            "rhost": [None, "Chronmecast IP", True],
-            "video": ["I03klvk-DXo", "Video ID > http://youtube.com/watch?v='video_id'", True]
-        }
-
         options = {"rhost": Option.create(name="rhost", required=True),
                    "video": Option.create(name="video", required=True, 
-                            description="Video ID > http://youtube.com/watch?v='video_id'")}
+                            description="Youtube Video ID > http://youtube.com/watch?v='video_id'")}
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         try:
 

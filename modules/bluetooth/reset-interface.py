@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Reset a bluetooth interface",
-                       "Description": "Launch this module to reset a specific bluetooth interface with hciconfig",
+                       "Description": "Launch this module to reset a specific bluetooth interface using hciconfig",
                        "Author": "@josueencinar",
                        "privileges": "root",}
 
@@ -20,7 +20,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         proc = Popen(f"hciconfig {self.args['iface']} reset".split(" "), stdout=PIPE, stderr=PIPE)

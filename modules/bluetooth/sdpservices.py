@@ -17,12 +17,12 @@ class HomeModule(Module):
 
         # -----------name-----default_value--description--required?
 
-        options = {"bmac": Option.create(name="bmac", required=True, description='Device address (None == all devices)')}
+        options = {"bmac": Option.create(name="bmac", description='Device address (None == all devices)')}
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         print_info("Searching services...")
         bmac = self.args["bmac"]

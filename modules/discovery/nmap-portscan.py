@@ -13,7 +13,16 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "nmap Port scan",
-                       "Description": "Using nmap to scan ports",
+                       "Description": """This module use nmap to perform a port scan. It's possible to perform the following scans:
+
+- S: SYN
+- T: Connect
+- A: ACK
+- W: Window
+- M: Maimon
+- N: Null
+- F: FIN
+- X: Xmas """,
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
@@ -22,13 +31,13 @@ class HomeModule(Module):
                     "rports": Option.create(name="rports", required=True),
                    "timeout": Option.create(name="timeout", value=6, required=True),
                    "scan": Option.create(name="scan", value="S", 
-                                        description='nmap scan. Check namp scans to configure (Examples: SYN = S; Connect = T', required=True)
+                                        description='nmap scan. Check namp scans to configure (Examples: SYN = S; Connect = T) ("show info" to check more)', required=True)
                 }
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         if not has_nmap:

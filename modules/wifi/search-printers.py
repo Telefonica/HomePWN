@@ -11,12 +11,12 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Search printers",
-                       "Description": "DDiscover nearby printers that have a raised access point",
+                       "Description": "Launch this module to discover nearby printers that have a raised access point.",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
-        options = {"iface": Option.create(name="iface", required=True),
+        options = {"iface": Option.create(name="iface", required=True, description="Network Interface (that allows promiscuous mode)"),
                    "channel": Option.create(name="channel")}
 
         self.ap_dict = {}
@@ -25,7 +25,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         print_info("Use CTRL^C to end this task")
         printers = ["print", "laserjet", "epson", "deskjet", "officejet" "xerox", "all-in-one", "envy", "scanjet",

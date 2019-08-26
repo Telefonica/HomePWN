@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "BLE Characteristics",
-                       "Description": "Get characteristics from a BLE device",
+                       "Description": "This module serves to read all the characteristics of a given BLE device. If you specify a UUID, only that characteristic will be read.",
                        "privileges": "root",
                        "OS": "Linux",
                        "Author": "@josueencinar"}
@@ -29,7 +29,7 @@ class HomeModule(Module):
         s_options = ShellOptions.get_instance()
         s_options.add_set_option_values("type", ["random", "public"])
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         ble_device = BLE(self.args["bmac"], self.args["type"])

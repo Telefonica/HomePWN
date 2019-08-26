@@ -9,7 +9,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Airptiny",
-                       "Description": "This module will generate avahi .service files for shared CUPS printers",
+                       "Description": "This module will connect to a CUPS server and for each printer configured and marked as shared will generate a .service file for avahi that is compatible with Apple's AirPrint announcements.",
                        "Author": "Timothy J Fontaine",
                        "Module Author": "@josueencinar",
                        "Reference": "https://github.com/tjfontaine/airprint-generate/blob/master/airprint-generate.py"}
@@ -26,7 +26,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         directory = self.args["dir"]
         if directory and not os.path.exists(directory):

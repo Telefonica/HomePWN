@@ -56,7 +56,7 @@ def test_set_ko(load):
 ### Check CommandParser
 def test_load_and_unload(load_get_command_parser):
     cp = load_get_command_parser(module="load discovery/ble")
-    assert cp.get_module_name() == "ble"
+    assert cp.get_module_name() == "discovery/ble"
     cp.parser("back")
     assert cp.module is None
 

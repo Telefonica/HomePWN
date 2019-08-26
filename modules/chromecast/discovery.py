@@ -8,7 +8,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "ChromeCast Discovery",
-                       "Description": "Launch this module to discover chrome",
+                       "Description": "Launch this module to discover chromecast within a Network.",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
@@ -17,7 +17,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         print_info("Searching devices")
         chromecasts = pychromecast.get_chromecasts(timeout=self.args["timeout"])

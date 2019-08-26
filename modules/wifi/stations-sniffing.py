@@ -12,7 +12,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Wifi Sniffing",
-                       "Description": "Discover stations connected to access points by sniffing",
+                       "Description": "With this module you can discover stations connected to access points by sniffing. It allows you search for specific venedores devices.",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
@@ -31,7 +31,7 @@ class HomeModule(Module):
         s_options = ShellOptions.get_instance()
         s_options.add_set_option_values("vendor", list(mac_devices.keys()))
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         dev = mac_devices.get(str(self.args["vendor"]), None)

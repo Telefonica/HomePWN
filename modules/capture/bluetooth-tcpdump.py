@@ -8,11 +8,11 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Capture Bluetooth Packets ",
-                       "Description": "Capture Bluetooth Packets with tcpdump and save it in a .pcap",
+                       "Description": "This module run in background and launch tcpdump to capture Bluetooth Packets. When you finish the taks the module save the content in a .pcap.",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
-        options = {"file": Option.create(name="rhost", value="./files/tcpdump.pcap", required=True),
+        options = {"file": Option.create(name="file", value="./files/tcpdump.pcap", required=True),
                    "iface": Option.create(name="iface", value="bluetooth0", required=True)}
 
 
@@ -20,7 +20,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self): 
         command = f"tcpdump -i {self.args['iface']} -w {self.args['file']}"
         new_process_command(command, "tcpdump")

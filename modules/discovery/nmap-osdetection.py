@@ -13,18 +13,18 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "nmap OS detection",
-                       "Description": "Using nmap to discover OS",
+                       "Description": "This module uses nmap to try to guess the operating system behind an IP.",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
-        options = {"rhost": Option.create(name="rhost"),
+        options = {"rhost": Option.create(name="rhost", required=True),
                    "timeout": Option.create(name="timeout", value=5)}
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         if not has_nmap:

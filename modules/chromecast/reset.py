@@ -9,7 +9,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Reset a Chromecast",
-                       "Description": "Factory reset for Chromecast",
+                       "Description": "This module allows you to do a factory reset for Chromecast.",
                        "Author": "@pablogonzalezpe, @josueencinar"}
 
         # -----------name-----default_value--description--required?
@@ -18,7 +18,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         uri = f"http://{self.args['rhost']}:8008/setup/reboot"
         headers = {

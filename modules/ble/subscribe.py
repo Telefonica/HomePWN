@@ -14,7 +14,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "BLE subscribe",
-                       "Description": "Subscribing to a BLE device",
+                       "Description": "Running this module you will be able to receive notifications of a certain BLE device.",
                        "privileges": "root",
                        "OS": "Linux",
                        "Author": "@josueencinar"}
@@ -41,7 +41,7 @@ class HomeModule(Module):
         s_options.add_set_option_values("type", ["random", "public"])
         s_options.add_set_option_values("encode", ["ascii", "hex"])
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         new_process_function(self._subscribe, name="Subscribe_ble")

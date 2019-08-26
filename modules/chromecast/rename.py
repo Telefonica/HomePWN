@@ -9,7 +9,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Rename Chromecast",
-                       "Description": "Change the name to a chromecast",
+                       "Description": "Using this module you can change directly the name to a specific chromecast.",
                        "Author": "@pablogonzalezpe, @josueencinar"}
 
         # -----------name-----default_value--description--required?
@@ -20,7 +20,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         try:
 

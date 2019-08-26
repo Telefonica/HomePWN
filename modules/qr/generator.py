@@ -7,12 +7,12 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "QR Generator",
-                       "Description": "Generates a QR given the info required",
+                       "Description": "With this module it is possible to generate a QR code in a customized way according to the information provided.",
                        "OS": "Linux",
                        "Author": "@lucferbux"}
 
         options = {
-            'data': Option.create(name="data", value="", required=True, description="data to write"),
+            'data': Option.create(name="data", required=True, description="data to write"),
             'version': Option.create(name="version", value=1, required=False, description="version of qr generated"),
             'box_size': Option.create(name="data", value=10, required=False, description="size of the box of the qr"),
             'border': Option.create(name="data", value=1, required=False, description="width of the border"),
@@ -26,7 +26,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         data = self.args.get("data", "")
         version = int(self.args.get("version", 1))

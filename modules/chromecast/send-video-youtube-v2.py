@@ -9,7 +9,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Send Youtube Video",
-                       "Description": "Send a youtube video to chromecast (v2)",
+                       "Description": "The module allows you to send a youtube video to a version 2 chromecast.",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
@@ -17,12 +17,12 @@ class HomeModule(Module):
                    "name": Option.create(name="name", description="Chromecast name"),
                    "timeout": Option.create(name="timeout"),
                    "video": Option.create(name="video", required=True, 
-                            description="Video ID > http://youtube.com/watch?v='video_id'")}
+                            description="Youtube Video ID > http://youtube.com/watch?v='video_id'")}
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         if not self.args["rhost"] and not self.args["name"]:
             print_info("Show options, it's necessary to configure onename or rhost")

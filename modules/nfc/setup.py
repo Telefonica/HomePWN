@@ -21,9 +21,10 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Setup NFC Reader",
-                       "Description": "Show help to setup NFC Reader",
+                       "Description": "Launch this module to review information on how to configure the NFC reader.",
                        "privileges": "root",
                        "OS": "Linux",
+                       "Reference" : "https://nfcpy.readthedocs.io/en/latest/",
                        "Author": "@lucferbux"}
 
         options = {
@@ -33,7 +34,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         reader = self.args.get("reader", "usb")
@@ -173,16 +174,17 @@ class HomeModule(Module):
                 else:
                     lsof = "lsof -t " + devnode
                     try:
-                        pid = subprocess.check_output(lsof.split()).strip()
+                        test = subprocess.check_output(lsof.split()).decode("utf-8") 
+                        pids = test.strip().split("\n")
                     except subprocess.CalledProcessError:
                         pid = None
-                    if pid is not None:
-                        ps = "ps --no-headers -o cmd -p %s" % pid
+                    for pid in pids:
+                        ps = f"ps --no-headers -o cmd -p {pid}"
                         cmd = subprocess.check_output(ps.split()).strip()
-                        cwd = os.readlink("/proc/%s/cwd" % pid)
-                        print_ok_raw("-- found that process %s uses the device" % pid)
-                        print("-- process %s is '%s'" % (pid, cmd))
-                        print("-- in directory '%s'" % cwd)
-                    else:
-                        print("   ps --no-headers -o cmd -p `sudo %s`" % lsof)
+                        cwd = os.readlink(f"/proc/{pid}/cwd")
+                        print_ok_raw(f"-- found that process {pid} uses the device")
+                        print(f"-- process {pid} is '{cmd}'")
+                        print(f"-- in directory '{cwd}'")
+                    # else:
+                    #     print(f"   ps --no-headers -o cmd -p `sudo {lsof}`")
     

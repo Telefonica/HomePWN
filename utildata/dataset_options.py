@@ -17,7 +17,8 @@ class Option:
                     "channel": Channel,
                     "mac": MAC,
                     "bssid": MAC,
-                    "bmac": MAC
+                    "bmac": MAC,
+                    "apishodan": SHODAN
                 } 
         cl = ALL_OPTIONS.get(name, None)
         if cl:
@@ -91,7 +92,7 @@ class RPORTS(GenericOption):
 
 class Timeout(GenericOption):
     def __init__(self, value=None, required=False, 
-                description="(seconds) Timeout to wait for search responses", match_pattern=r"^\d+$"):
+                description="Timeout to wait for search responses. (In seconds)", match_pattern=r"^\d+$"):
         key="timeout"
         super(Timeout, self).__init__(key, value, required, description, match_pattern)
 
@@ -112,13 +113,13 @@ class File(GenericOption):
         super(File, self).__init__(key, value, required, description, match_pattern)
 
 class URI(GenericOption):
-    def __init__(self, value=None, required=False, description="File to dump or read the data", 
+    def __init__(self, value=None, required=False, description="URI", 
                 match_pattern = r"^http://|^https://|rtsp://|ftp://"):
         key="uri"
         super(URI, self).__init__(key, value, required, description, match_pattern)
 
 class Channel(GenericOption):
-    def __init__(self,value=None, required=False, description="Network channel", match_pattern=r"^\d{1,2}$"):
+    def __init__(self,value=None, required=False, description="Network channel. Configure this option if you want to fix it and not 'make jumps'", match_pattern=r"^\d{1,2}$"):
         key="channel"
         super(Channel, self).__init__(key, value, required, description, match_pattern)
 
@@ -126,3 +127,8 @@ class MAC(GenericOption):
     def __init__(self, value=None, required=False, description="Mac address", match_pattern=r"^(?:[0-9a-fA-F]:?){12}$"):
         key="mac"
         super(MAC, self).__init__(key, value, required, description, match_pattern)
+
+class SHODAN(GenericOption):
+    def __init__(self, value=None, required=False, description="Shodan API Key"):
+        key="shodan"
+        super(SHODAN, self).__init__(key, value, required, description)

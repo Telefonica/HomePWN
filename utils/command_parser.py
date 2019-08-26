@@ -16,6 +16,7 @@ from utils.color_palette import ColorSelected, colors_terminal
 class CommandParser:
     def __init__(self):
         self.module = None
+        self.module_commands = ["set", "unset", "back", "show", "run", "global"]
         # Our switcher
         self.commands = {
             "load": self._load,
@@ -42,7 +43,6 @@ class CommandParser:
             self._execute_command(command[1:])
         else:
             u_input = command.split()
-                
             if len(u_input) >=  2:
                 self.commands.get(u_input[0])(u_input[1:])
             else:
@@ -80,12 +80,16 @@ class CommandParser:
 
 
     def _load(self, name):
-        loaded = load_module(name[0])
+        try:
+            loaded = load_module(name[0])
+        except Exception as e:
+            print(e)
         if loaded:
-            n = name[0].split("/")[-1]
+            self._unload()
             self.module = loaded
-            self.module.set_name(n)
-            self.shell_options.add_module_options(self.module.get_options_names())
+            self.module.set_name(name[0])
+            new_functions = self.module.get_new_functions()
+            self.shell_options.add_module_options(self.module.get_options_names(), new_functions)
             # Add new commands to autocomplete
             module_new_commands = {
                 "set": self.module.set_value,
@@ -95,16 +99,27 @@ class CommandParser:
                 "show": self.module.show,
                 "run": self._run
             }
+
+            for f in new_functions:
+                if f not in list(module_new_commands.keys()):
+                    module_new_commands[f] = getattr(self.module, f)
+                    self.module_commands.append(f)
+
             self.commands.update(module_new_commands) 
-            self.module.update_complete_set()     
+            self.module.update_complete_set()
             
     @exception("")    
     def _unload(self):
         self.module = None
         # Remove commands that cannot be used without a module
         self.shell_options.del_module_options()
-        for c in ["set", "unset", "back", "show", "run", "global"]:
-            del self.commands[c]
+        for c in self.module_commands:
+            try:
+                del self.commands[c]
+            except:
+                 self.module_commands.remove(c)
+        for f in self.module.get_new_functions():
+            del self.commands[f]
     
     @exception("Error setting global option")
     def _setglobal(self, user_input=[]):
@@ -112,7 +127,6 @@ class CommandParser:
             success = self.module.set_value(user_input)
             if success:
                 Global.get_instance().add_value(user_input[0], ' '.join([str(x) for x in user_input[1:]]))
-            
             
     @exception("There are required options without value")  
     def _run(self):
@@ -133,7 +147,10 @@ class CommandParser:
         banner(animation=False)     
         
     def _help(self, param=None):
-        show_help()
+        data = None
+        if self.module:
+            data = self.module.get_extra_help()
+        show_help(data)
 
     def _list_modules(self, category=None):
         pwd = "./modules"

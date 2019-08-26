@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Discovery Xiaomi devices ",
-                       "Description": "Discover Xiaomi devices (Passive mode)",
+                       "Description": "The module discovers Xiaomi devices through MDNS. The service type is set to _miio._udp.local.",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
@@ -18,7 +18,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         listener = Listener()
         try:

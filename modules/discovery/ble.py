@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Discovery BLE devices ",
-                       "Description": "Discover devices with active ble",
+                       "Description": "With this module you can discover nearby devices with BLE (Bluetooth Low Energy) active. The result will be sorted by RSSI.",
                        "privileges": "root",
                        "OS": "Linux",
                        "Author": "@josueencinar"}
@@ -22,7 +22,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         print("Searching BLE devices...\n")

@@ -10,21 +10,21 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Wifi Deauth",
-                       "Description": "Pull a device out of the wifi network",
+                       "Description": "With this module you will be able to pull a specific user out from a specific network. If client is set to broadcast you will kick out all users. If count -1 the attack will be continued until you finish it manually.",
                        "Author": "@josueencinar",
                        "Reference": "https://gist.github.com/garyconstable/1dca3c32dfd05f0bd15f"}
 
         # -----------name-----default_value--description--required?
-        options = {"bssid": Option.create(name="bssid", required=True),
+        options = {"bssid": Option.create(name="bssid", required=True, description="Access point mac address"),
                    "iface": Option.create(name="iface", required=True),
                    "client": Option.create(name="mac", required=True, description="Target Mac address"),
-                   "count": Option.create(name="count", value=-1, required=True, description='"Number of packets to send (-1 >> infinite in background)"')
+                   "count": Option.create(name="count", value=-1, required=True, description="Number of packets to send (-1 >> infinite in background)")
                    }
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         try:

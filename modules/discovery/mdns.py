@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Discovery MDNS Services",
-                       "Description": "Launch me to discover services through MDNS",
+                       "Description": "With this module certain services can be discovered via MDNS (Multicast DNS).",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
@@ -20,7 +20,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         listener = Listener()
         print("Searching. Press q to stop")

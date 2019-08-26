@@ -9,18 +9,22 @@ class Module(ABC):
     """Class from which all usable modules of the tool have to inherit
         
         Args:
-            info (dict, required): Information about the module (Name, Description, Author, ...).
-            options (dict, required): Module options  {name: [default_value, description, required?]}.
+            info (dict, required): Information about the module (Name, Description, Author, Reference ...).
+            options (dict, required): Module options  {name: Option.Create(...)}.
     """
-    
     def __init__(self, info, options):
         self.options = options
         self.info = info
         self.name = ""
+        # 'args' makes it easy to use the options {key: value}
         self.args = {}
         self.init_args()
+        # 
         self.update_global()
         self.update_options()
+        # The 2 variables below are for storing extra and uncommon functionality needed by a module
+        self._new_functions = []
+        self._extra_help = None
 
     def set_name(self, name):
         self.name = name
@@ -41,6 +45,7 @@ class Module(ABC):
         for key, opts in self.options.items():
             self.args[key] = opts.value
 
+    # Update global options dictionary with new options if necessary
     def update_global(self):
         global_aux = Global.get_instance()
         variables = global_aux.get_variables()
@@ -50,7 +55,8 @@ class Module(ABC):
                     continue
             except:
                 global_aux.add_value(key, None)
-    
+
+    # Checks the global options to update the module when loaded
     def update_options(self):
         variables = Global.get_instance().get_variables()
         for key, value in self.options.items():
@@ -140,6 +146,24 @@ class Module(ABC):
             if option.required is True and str(option.value) == "None":
                 return False
         return True
+
+    # New Function to autocomplete and run for the module that needs it
+    # If the function already exists it will be ignored, make sure of the name
+    # The module must implement this new function. If you don't make a mistake loading it.
+    # Parameters, if needed, are received in a single argument of type list
+    def register_new_function(self, op):
+        self._new_functions.append(op)
+    
+    def get_new_functions(self):
+        return self._new_functions
+    
+    def get_extra_help(self):
+        return self._extra_help
+    
+    # 'extra_help' is a dictionary >> {command: brief description}
+    ## For a correct view 'command' must be less than 26 characters 
+    def set_extra_help(self, extra_help):
+        self._extra_help = extra_help
 
     # Implement in specific classic if it's necessary to add some values to the 'set' autocomplete
     def update_complete_set(self):

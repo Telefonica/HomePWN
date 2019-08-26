@@ -8,7 +8,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Discovery Xiaomi devices ",
-                       "Description": "Discover Xiaomi devices (Active mode)",
+                       "Description": "This module uses socket requests to discover Xiaomi devices on a network (Active Discovery). You can configure rhost for a specific search or leave it on None to do a full search.",
                        "Token_info": "Devices with the token all 0 or f are already paired",
                        "Author": "@josueencinar"}
 
@@ -20,7 +20,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         # thanks to python-miio https://github.com/rytilahti/python-miio
         try:

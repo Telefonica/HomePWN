@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Guessing OS through TTL",
-                       "Description": "Check TTL to try to guess the OS",
+                       "Description": "This module checks the TTL to try to find out the operating system. The discovery/nmap-osdetection module is more complete.",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
@@ -21,7 +21,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         print("Checking...\n")

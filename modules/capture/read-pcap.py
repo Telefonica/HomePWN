@@ -12,19 +12,19 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Read pcap",
-                       "Description": "Use this module to read pcap files",
+                       "Description": "This module allows read captured packets from a .pacp file.",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
 
         options = {"file": Option.create(name="file", value="./files/blueScapy.pcap", required=True, description='pcap file to read'),
-                   "pkts": Option.create(name="pkts", value=0, description='Limit total packets to show in terminal')}
+                   "pkts": Option.create(name="pkts", value=0, description='Limit total packets to show in terminal (0 no limit)')}
         conf.verb = 0
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         if VERSION <= "2.4.2":
             print_error("You need a 2.4.3 or higher version of scapy")

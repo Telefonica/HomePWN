@@ -10,7 +10,7 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Reboot a Chromecast",
-                       "Description": "Reboot the specified chromecast",
+                       "Description": "With this module you can reboot a specified chromecast.",
                        "Author": "@pablogonzalezpe, @josueencinar"}
 
         # -----------name-----default_value--description--required?
@@ -19,7 +19,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     def run(self):
         # chromecast = pychromecast.Chromecast(self.args["rhost"])
         # chromecast.reboot()

@@ -11,19 +11,19 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Capture Bluetooth Packets ",
-                       "Description": "Capture Bluetooth Packets with Scapy and save it in a .pcap",
+                       "Description": "This module creates a task in background who takes care of capturing Bluetooth Packets with Scapy. When the user finishes the task he saves the packages in a .pcap file.",
                        "privileges": "root",
                        "Author": "@josueencinar"}
 
         # -----------name-----default_value--description--required?
-        options = {"file": Option.create(name="rhost", value="./files/blueScapy.pcap", required=True),
-                   "iface": Option.create(name="iface", value="0", required=True, description='Bluetooth interface (Example: hci0 is 0)')}
+        options = {"file": Option.create(name="file", value="./files/blueScapy.pcap", required=True),
+                   "iface": Option.create(name="iface", value="0", required=True, description='Bluetooth interface (Example: set 0 to hci0')}
         conf.verb = 0
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         if VERSION <= "2.4.2":

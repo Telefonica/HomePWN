@@ -15,9 +15,10 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "Dump NFC file",
-                       "Description": "Dumps the content of an nfc tag",
+                       "Description": "This module dumps the contents of an nfc tag in a file. ",
                        "privileges": "root",
                        "OS": "Linux",
+                       "Reference" : "https://nfcpy.readthedocs.io/en/latest/",
                        "Author": "@lucferbux"}
 
         options = {
@@ -28,7 +29,7 @@ class HomeModule(Module):
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
 
-    # This module must be always implemented, it is called by the run option
+    # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
         file = self.args.get("file", "tag.ndef")
