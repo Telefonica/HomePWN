@@ -93,7 +93,7 @@ Here are some videos to see how the tool works.
 [![HomePwn. Apple BLE Discovery](https://img.youtube.com/vi/xOU34op7Gls/0.jpg)](https://www.youtube.com/watch?v=xOU34op7Gls)
 
 ### **HomePwn. Xiaomi IoT Advertisement**
-[![HomePwn. Xiaomi IoT Advertisement](https://img.youtube.com/vi/[[ID]]/0.jpg)](https://www.youtube.com/watch?v=[[ID]])
+[![HomePwn. Xiaomi IoT Advertisement](https://img.youtube.com/vi/[[ID]]/0.jpg)](https://www.youtube.com/watch?v=Xi7KZibJsfE)
 
 # Authors
 
