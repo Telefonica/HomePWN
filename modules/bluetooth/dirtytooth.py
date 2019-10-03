@@ -11,13 +11,13 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "DirtiTooth",
-                       "Description": "Takes advantage of the management of the profiles causing impact on the privacy of users who use Bluetooth technology daily",
+                       "Description": "Takes advantage of the management of the profiles causing impact on the privacy of users who use Bluetooth technology daily. Run launchService before",
                        "Author": "@josueencinar",
                        "privileges": "root",
                        "Target": "iOS 11.2 and earlier"}
 
         # -----------name-----default_value--description--required?
-        options = {"bmac": Option.create(name="bmac", required=True),
+        options = {"bmac": Option.create(name="bmac", required=True , description='Mac of the victim joined by the launchService module'),
                    "path": Option.create(name="path", value="/tmp/dirtytooth", required=True, description='Path to save contacts')
                    }
 

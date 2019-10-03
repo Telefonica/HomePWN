@@ -63,14 +63,16 @@ then
     rm -r owl
 fi
 
-cd ./utils/swig
+cd ./utils && unzip swig.zip && cd swig
 echo ${PWD##*/}
 if [ ${PWD##*/} == "swig" ] 
 then
     ./configure
     make
     make install
-    cd ../..
+    cd ..
+    rm -r swig/
+    cd ..
 fi
 
 

@@ -25,7 +25,7 @@ def prompt(commands, module=None):
     color_default_prompt = ColorSelected().theme.primary
     warn = ColorSelected().theme.warn
     confirm = ColorSelected().theme.confirm
-    html = HTML(f"<bold><{color_default_prompt}>{default_prompt} >></{color_default_prompt}></bold> ")
+    html = HTML(f"<bold><{color_default_prompt}>{default_prompt} >></{color_default_prompt}></bold>")
     if module:
         html = HTML(f"<bold><{color_default_prompt}>{default_prompt}</{color_default_prompt}> (<{warn}>{module}</{warn}>) <{confirm}>>></{confirm}></bold> ")
     data = session.prompt(
