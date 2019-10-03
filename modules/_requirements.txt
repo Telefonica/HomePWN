@@ -1,3 +1,4 @@
+setuptools 
 pytest
 requests>=2.0
 protobuf>=3.0.0
@@ -5,7 +6,7 @@ zeroconf>=0.21.0
 casttube>=0.2.0
 pychromecast
 pybluez
-bluepy  
+bluepy 
 scapy
 access_points
 python-nmap
@@ -19,7 +20,6 @@ nfcpy
 pyzbar
 qrcode[pil]
 readchar
-pyscard
 evdev
 python-uinput
 bs4
@@ -33,6 +33,7 @@ ctypescrypto
 twisted
 pcapy
 dnspython
-python-uinputce
+python-uinput
 paho-mqtt
 shodan
+pyscard

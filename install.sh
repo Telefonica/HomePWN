@@ -58,10 +58,21 @@ then
     cd build
     cmake ..
     make
-    udo make install
+    sudo make install
     cd ../..
     rm -r owl
 fi
+
+cd ./utils/swig
+echo ${PWD##*/}
+if [ ${PWD##*/} == "swig" ] 
+then
+    ./configure
+    make
+    make install
+    cd ../..
+fi
+
 
 read  -p "Do you want to create a virtual environment? (y/n): " follow
 
