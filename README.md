@@ -49,9 +49,10 @@ You need to have Linux and python 3.6+ running in your computer, please install 
 
 ## Installing all requisites:
 
-To install all dependencies in Debian or derivatives use the file install.sh
+To install all dependencies in Ubuntu 18.04 or derivatives use the file install.sh
 
 ```
+> sudo apt-get update
 > sudo ./install.sh
 ```
 The script ask you if you want to create a virtualenv, if your answer is 'y' then it installs python libraries within the virtual environment, if not in the system itself
