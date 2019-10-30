@@ -53,6 +53,7 @@ To install all dependencies in Ubuntu 18.04 or derivatives use the file install.
 
 ```
 > sudo apt-get update
+> cd [path to the HomePWN project]
 > sudo ./install.sh
 ```
 The script ask you if you want to create a virtualenv, if your answer is 'y' then it installs python libraries within the virtual environment, if not in the system itself
