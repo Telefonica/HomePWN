@@ -25,65 +25,62 @@ import argparse
 import sys
 import json
 import os
+from time import sleep
 import threading
 
 from .client import AirDropBrowser, AirDropClient
 from .config import AirDropConfig, AirDropReceiverFlags
 from .server import AirDropServer
+from .error import ReceiverError
 
 logger = logging.getLogger(__name__)
 
 
-devices=[]
-
 def main():
-    AirDropCli(sys.argv[1:])
+    AirDropBase(sys.argv[1:])
 
 
-class AirDropCli:
+class AirDropBase:
 
-    def __init__(self, args):
-        parser = argparse.ArgumentParser()
-        parser.add_argument('action', choices=['receive', 'find', 'send'])
-        parser.add_argument('-f', '--file', help='File to be sent')
-        parser.add_argument('-r', '--receiver', help='Peer to send file to (can be index, ID, or hostname)')
-        parser.add_argument('-e', '--email', nargs='*', help='User\'s email addresses (currently unused)')
-        parser.add_argument('-p', '--phone', nargs='*', help='User\'s phone numbers (currently unused)')
-        parser.add_argument('-l', '--legacy', help='Enable legacy mode', action='store_true')
-        parser.add_argument('-d', '--debug', help='Enable debug mode', action='store_true')
-        parser.add_argument('-i', '--interface', help='Which AWDL interface to use', default='awdl0')
-        args = parser.parse_args(args)
-        if args.debug:
+    def __init__(self, action, callback=None, file=None, debug=False, receiver=None, email=None, phone=None, name=None, model=None, interface=None):
+        # parser = argparse.ArgumentParser()
+        # parser.add_argument('action', choices=['receive', 'find', 'send'])
+        # parser.add_argument('-f', '--file', help='File to be sent')
+        # parser.add_argument('-r', '--receiver', help='Peer to send file to (can be index, ID, or hostname)')
+        # parser.add_argument('-e', '--email', nargs='*', help='User\'s email addresses (currently unused)')
+        # parser.add_argument('-p', '--phone', nargs='*', help='User\'s phone numbers (currently unused)')
+        # parser.add_argument('-n', '--name', help='Computer name (displayed in sharing pane)')
+        # parser.add_argument('-m', '--model', help='Computer model (displayed in sharing pane)')
+        # parser.add_argument('-d', '--debug', help='Enable debug mode', action='store_true')
+        # parser.add_argument('-i', '--interface', help='Which AWDL interface to use', default='awdl0')
+        # args = parser.parse_args(args)
+
+        if debug:
             logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(name)s: %(message)s')
-        else:
-            logging.basicConfig(level=logging.NOTSET, format='%(message)s')
-            logging.disable(sys.maxsize)
+
 
         # TODO put emails and phone in canonical form (lower case, no '+' sign, etc.)
-
-        self.config = AirDropConfig(email=args.email, phone=args.phone, legacy=args.legacy,
-                                    debug=args.debug, interface=args.interface)
+        self.config = AirDropConfig(email=email, phone=phone,
+                                    computer_name=name, host_name=name, computer_model=model,
+                                    debug=debug, interface=interface)
         self.server = None
         self.client = None
+        self.discover = []
         self.browser = None
         self.sending_started = False
-        self.discover = []
         self.lock = threading.Lock()
-
         try:
-            if args.action == 'receive':
-                self.receive()
-            elif args.action == 'find':
+            if action == 'receive':
+                self.receive(callback)
+            elif action == 'find':
                 self.find()
-            else:  # args.action == 'send'
-                if args.file is None:
-                    parser.error('Need -f,--file when using send')
-                if not os.path.isfile(args.file):
-                    parser.error('File in -f,--file not found')
-                self.file = args.file
-                if args.receiver is None:
-                    parser.error('Need -r,--receiver when using send')
-                self.receiver = args.receiver
+            else:  # action == 'send'
+                if file is None or not os.path.isfile(file):
+                    raise FileNotFoundError
+                self.file = file
+                if receiver is None:
+                    raise ReceiverError
+                self.receiver = receiver
                 self.send()
         except KeyboardInterrupt:
             if self.browser is not None:
@@ -91,34 +88,20 @@ class AirDropCli:
             if self.server is not None:
                 self.server.stop()
 
-    def receive(self):
-        self.server = AirDropServer(self.config)
-        #print(self.config.interface)
-        self.server.start_service()
-        self.server.start_server()
-
     def find(self):
-        #logger.info('Looking for receivers. Press enter to stop ...')
+        logger.info('Looking for receivers. Press enter to stop ...')
         self.browser = AirDropBrowser(self.config)
         self.browser.start(callback_add=self._found_receiver)
-        # try:
-        #     # input()
-        #     while 1:
-        #         a=1
-        # except KeyboardInterrupt:
-        #     pass
-        # finally:
-        #     self.browser.stop()
-        #     logger.debug('Save discovery results to {}'.format(self.config.discovery_report))
-        #     with open(self.config.discovery_report, 'w') as f:
-        #         json.dump(self.discover, f)
+
+
+    def get_devices(self):
+        return self.discover
 
     def _found_receiver(self, info):
         thread = threading.Thread(target=self._send_discover, args=(info,))
         thread.start()
 
     def _send_discover(self, info):
-        global devices
         try:
             address = ipaddress.ip_address(info.address).compressed
         except ValueError:
@@ -126,8 +109,7 @@ class AirDropCli:
         id = info.name.split('.')[0]
         hostname = info.server
         port = int(info.port)
-        logger.debug('AirDrop service found: {}, {}:{}, ID {}'.format(hostname, address, port, id))
-        #print('AirDrop service found: {}, {}:{}, ID {}'.format(hostname, address, port, id))
+        #logger.debug('AirDrop service found: {}, {}:{}, ID {}'.format(hostname, address, port, id))
         client = AirDropClient(self.config, (address, int(port)))
         flags = int(info.properties[b'flags'])
         receiver_name = None
@@ -135,6 +117,8 @@ class AirDropCli:
         if flags & AirDropReceiverFlags.SUPPORTS_DISCOVER_MAYBE:
             try:
                 reponse = client.send_discover()
+                with open("airdrop_test.txt", "a+") as patata:
+                    patata.write(response)
                 receiver_name =reponse.get('ReceiverComputerName')
                 ReceiverMediaCapabilities = json.loads(reponse['ReceiverMediaCapabilities'])
                 os_version = ReceiverMediaCapabilities.get('Vendor', {}).get('com.apple', {}).get('OSVersion', '') 
@@ -147,7 +131,6 @@ class AirDropCli:
 
         discoverable = receiver_name is not None
 
-        index = len(self.discover)
         node_info = {
             'name': receiver_name,
             'address': address,
@@ -159,15 +142,22 @@ class AirDropCli:
             'os': os_info,
         }
         self.lock.acquire()
-        self.discover.append(node_info)
-        if discoverable:
-            logger.info('Found  index {}  ID {}  name {}'.format(index, id, receiver_name))
+        ids = [dev.get('id', '') for dev in self.discover]
+        addresses = [dev.get('address', '') for dev in self.discover]
+        if((node_info.get('id', '') not in ids) and (node_info.get('address', '') not in addresses)):
+            self.discover.append(node_info)
+        # if discoverable:
+        #     logger.info('Found  index {}  ID {}  name {}'.format(index, id, receiver_name))
             #print('Found  index {}  ID {}  name {}'.format(index, id, receiver_name))
         # #print (node_info)
-        devices = self.discover
         self.lock.release()
 
-    
+
+    def receive(self, callback):
+        self.server = AirDropServer(self.config, callback=callback)
+        self.server.start_service()
+        self.server.start_server()
+        
 
     def send(self):
         info = self._get_receiver_info()
@@ -188,12 +178,10 @@ class AirDropCli:
     def _get_receiver_info(self):
         if not os.path.exists(self.config.discovery_report):
             logger.error('No discovery report exists, please run \'opendrop find\' first')
-            #print('No discovery report exists, please run \'opendrop find\' first')
             return None
         age = time.time() - os.path.getmtime(self.config.discovery_report)
         if age > 60:  # warn if report is older than a minute
             logger.warning('Old discovery report (%.1f seconds), consider running \'opendrop find\' again', age)
-            #print('Old discovery report (%.1f seconds), consider running \'opendrop find\' again', age)
         with open(self.config.discovery_report, 'r') as f:
             infos = json.load(f)
 
@@ -216,8 +204,4 @@ class AirDropCli:
                 return info
         # (fail)
         logger.error('Receiver does not exist (check -r,--receiver format or try \'opendrop find\' again')
-        #print('Receiver does not exist (check -r,--receiver format or try \'opendrop find\' again')
         return None
-
-def get_devices():
-    return devices

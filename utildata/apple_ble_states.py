@@ -1,28 +1,70 @@
 # Adapting script from https://github.com/hexway/apple_bleee
 # Thanks to Dmitry Chastuhin @_chipik and https://hexway.io 
 
-# not sure about 1b, 13, 0a, 1a, 17
-phone_states = {'0b': 'Home screen',
-                '1c': 'Home screen',
-                '1b': 'Home screen',
-                '11': 'Home screen',
-                '4b': 'Home screen/Airdrop',
-                '03': 'Off',
-                '18': 'Off',
-                '09': 'Off',
-                '13': 'Off',
-                '0a': 'Off',
-                '1a': 'Off',
-                '01': 'Off',
-                '07': 'Lock screen',
-                '17': 'Lock screen',
-                '4a': 'Lock screen',
-                '0e': 'Calling',
-                '1e': 'Calling',
-                '5e': 'Calling',
-                '5b': 'Home screen/Airdrop',
-                '5a': 'Off',
-                }
+airdrop_state_on = ['4b', '5b', '6b']
+dev_types = ["iPad", "iPhone", "MacBook", "AirPods", "Homepod", "Watch"]
+dev_sig = {'02010': 'MacBook', '02011': 'iPhone/iPad'}
+
+
+ble_packets_types = {
+    'watch_c': '0b',
+    'handoff': '0c',
+    'wifi_set': '0d',
+    'hotspot': '0e',
+    'wifi_join': '0f',
+    'nearby': '10',
+    'airpods': '07',
+    'airdrop': '05',
+}
+
+os_types = {
+    "10": 'iOS11',
+    "le": 'iOS13',
+    "la": 'iOS13',
+    "0e": 'iOS13',
+    "1e": 'iOS13',
+    "04": 'iOS13',
+    "1f": 'iOS13',
+    "1a": 'iOS13',
+    "0c": 'iOS13',
+    "00": 'iOS10',
+    "09": 'macOS',
+    "14": 'macOS',
+    "98": 'WatchOS'
+}
+
+phone_states = {
+    '0b': 'Home screen',
+    '1c': 'Home screen',
+    '2b': 'Home screen',
+    '1b': 'Home screen',
+    '11': 'Home screen',
+    '6b': 'Home screen',
+    '03': 'Off',
+    '18': 'Off',
+    '09': 'Off',
+    '13': 'Off',
+    '0a': 'Off',
+    '1a': 'Off',
+    '01': 'Off',
+    '23': 'Off',
+    '07': 'Lock screen',
+    '27': 'Lock screen',
+    '17': 'Lock screen',
+    '4a': 'Lock screen',
+    '57':'Lock screen',
+    '67':'Lock screen',
+    '47':'Lock screen',
+    '0e': 'Calling',
+    '1e': 'Calling',
+    '5e': 'Calling',
+    '4e':'Outgoing call',
+    '4b': 'Home screen',
+    '5b': 'Home screen',
+    '5a': 'Off',
+    '5e':'Incoming call',
+    '6e': 'Incoming call',
+}
 
 airpods_states = {
     '00': 'Case:Closed',
@@ -52,12 +94,6 @@ airpods_states = {
     '73': 'Case:R out',
     '75': 'Case:open',
 }
-
-dev_types = ["iPad", "iPhone", "MacOS", "AirPods"]
-
-
-dev_sig = {'02010': 'MacBook', '02011': 'iPhone/iPad'}
-
 
 devices_models = {
     "i386": "iPhone Simulator",
@@ -207,12 +243,4 @@ devices_models = {
     "Watch4,4": "Apple Watch Series 4 44mm case (GPS+Cellular)",
 }
 
-ble_packets_types = {'watch_c': '0b',
-                     'handoff': '0c',
-                     'wifi_set': '0d',
-                     'hotspot': '0e',
-                     'wifi_join': '0f',
-                     'nearby': '10',
-                     'airpods': '07',
-                     'airdrop': '05',
-                     }
+

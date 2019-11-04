@@ -86,8 +86,8 @@ then
 fi
 echo "Installing python libraries..."
 # Install Python dependencies
-pip3 install --no-cache-dir -r ./requirements.txt  -q &> /dev/null
-pip3 install --no-cache-dir -r ./modules/_requirements.txt -q &> /dev/null
+sudo pip3 install --no-cache-dir -r ./requirements.txt
+sudo pip3 install --no-cache-dir -r ./modules/_requirements.txt
 
 echo "Done!"
 

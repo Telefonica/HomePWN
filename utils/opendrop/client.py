@@ -38,22 +38,15 @@ logger = logging.getLogger(__name__)
 class AirDropBrowser:
 
     def __init__(self, config):
-        self.legacy_mode = config.legacy
-        if self.legacy_mode:
-            self.useIPv6 = False
-        else:
-            self.useIPv6 = True
-        self.ip_interface_name = config.interface
-
-        self.ip_addr, self.byte_address = AirDropUtil.get_ip_for_interface(self.ip_interface_name, ipv6=self.useIPv6)
-
+        self.ip_addr = AirDropUtil.get_ip_for_interface(config.interface, ipv6=True)
         if self.ip_addr is None:
-            raise RuntimeError('Interface {} does not have IP(v6) address'.format(self.ip_interface_name))
+            if config.interface is 'awdl0':
+                raise RuntimeError('Interface {} does not have an IPv6 address. '
+                                   'Make sure that `owl` is running.'.format(config.interface))
+            else:
+                raise RuntimeError('Interface {} does not have an IPv6 address'.format(config.interface))
 
-        if self.legacy_mode:
-            self.zeroconf = Zeroconf()
-        else:
-            self.zeroconf = Zeroconf(interfaces=[self.ip_addr], ipv6_interface_name=self.ip_interface_name)
+        self.zeroconf = Zeroconf(interfaces=[self.ip_addr], ipv6_interface_name=config.interface)
 
         self.callback_add = None
         self.callback_remove = None
@@ -76,13 +69,13 @@ class AirDropBrowser:
 
     def add_service(self, zeroconf, type, name):
         info = zeroconf.get_service_info(type, name)
-        logger.debug('Add service {}'.format(name))
+        #logger.debug('Add service {}'.format(name))
         if self.callback_add is not None:
             self.callback_add(info)
 
     def remove_service(self, zeroconf, type, name):
         info = zeroconf.get_service_info(type, name)
-        logger.debug('Remove service {}'.format(name))
+        #logger.debug('Remove service {}'.format(name))
         if self.callback_remove is not None:
             self.callback_remove(info)
 
@@ -96,7 +89,7 @@ class AirDropClient:
         self.http_conn = None
 
     def send_POST(self, url, body, headers=None):
-        logger.debug('Send {} request'.format(url))
+        #logger.debug('Send {} request'.format(url))
 
         AirDropUtil.write_debug(self.config, body, 'send_{}_request.plist'.format(url.lower().strip('/')))
 
@@ -117,25 +110,22 @@ class AirDropClient:
 
         if http_resp.status != 200:
             status = False
-            logger.debug('{} request failed: {}'.format(url, http_resp.status))
+            #logger.debug('{} request failed: {}'.format(url, http_resp.status))
         else:
             status = True
-            logger.debug('{} request successful'.format(url))
+            #logger.debug('{} request successful'.format(url))
         return status, response_bytes
 
     def send_discover(self):
-        # discover_body = {}
         a = './utildata/receive_discover_request.plist'
         discover_body = plistlib.readPlist(a)
         if self.config.record_data:
             discover_body['SenderRecordData'] = self.config.record_data
         discover_plist_binary = plistlib.dumps(discover_body, fmt=plistlib.FMT_BINARY)
-        # print (discover_plist_binary)
         success, response_bytes = self.send_POST('/Discover', discover_plist_binary)
         response = plistlib.loads(response_bytes)
-        # print (response)
-        # if name is returned, then receiver is discoverable
         return response
+
 
     def send_ask(self, file_path, icon=None):
         ask_body = {
@@ -145,9 +135,6 @@ class AirDropClient:
             'SenderID': self.config.service_id,
             'ConvertMediaFormats': False,
         }
-        if self.config.legacy:
-            ask_body['SenderEmailHash'] = AirDropUtil.doubleSHA1Hash(self.config.email)
-            ask_body['SenderPhoneHash'] = AirDropUtil.doubleSHA1Hash(self.config.phone)
         if self.config.record_data:
             ask_body['SenderRecordData'] = self.config.record_data
 

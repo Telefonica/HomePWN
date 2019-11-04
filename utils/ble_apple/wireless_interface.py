@@ -26,17 +26,7 @@ def check_wifi_config(iwdev):
     if(result.stderr.read()):
         # exception bad interface
         raise BadInterfaceException
-
-    r = Popen(["rfkill", "list", "all"], stdout=PIPE, stderr=PIPE)
-    r = Popen(["ifconfig", iwdev, "down"], stdout=PIPE, stderr=PIPE)
-    result = Popen(["iwconfig", iwdev, "mode", "monitor"], stdout=PIPE, stderr=PIPE)
-    if(result.stderr.read()):
-        # exception mode montiro
-        raise ModeMonitorException
-    
-    r = Popen(["ifconfig", iwdev, "up"], stdout=PIPE, stderr=PIPE)
-
-    r = Popen(["ip", "link", "set", iwdev, "up"], stdout=PIPE, stderr=PIPE)
+    r = Popen(["airmon-ng", "check", "kill"], stdout=PIPE, stderr=PIPE)
 
     owl_result = check_owl_process()
 
@@ -44,9 +34,12 @@ def check_wifi_config(iwdev):
         process_id = owl_result.lstrip(' ').split(" ")[0]
         os.kill(int(process_id), signal.SIGTERM)
 
-    result = Popen(["owl", "-i", iwdev, "-N", "-D"], stdout=PIPE, stderr=PIPE)
+    # result = Popen(["owl", "-i", iwdev])
+    result = Popen(["owl", "-i", iwdev, "-D"], stdout=PIPE, stderr=PIPE)
     if(result.stderr.read()):
+        print("Error")
         raise OwlException
+
 
 
 def check_owl_process():

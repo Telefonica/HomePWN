@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import netifaces
-
 import base64
 import datetime
 import io
@@ -26,8 +25,8 @@ import ipaddress
 import os
 import platform
 import plistlib
-import socket
-from Crypto.Hash import SHA, SHA256
+import hashlib
+import ifaddr
 from PIL import Image, ExifTags
 from libarchive import ffi
 from libarchive.entry import new_archive_entry, ArchiveEntry
@@ -121,8 +120,8 @@ class AirDropUtil:
         valid_date = datetime.datetime.now() - datetime.timedelta(days=3)
         valid_date_string = valid_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        emails_hashed = [SHA256.new(email.encode('utf-8')).hexdigest() for email in config.email]
-        phone_numbers_hashed = [SHA256.new(phone_number.encode('utf-8')).hexdigest() for phone_number in config.phone]
+        emails_hashed = [hashlib.sha256(email.encode('utf-8')).hexdigest() for email in config.email]
+        phone_numbers_hashed = [hashlib.sha256(phone_number.encode('utf-8')).hexdigest() for phone_number in config.phone]
 
         # Get the common name of the TLS certificate
         with open(tls_cert, 'rb') as cert_file:
@@ -152,23 +151,6 @@ class AirDropUtil:
                 signed_data = AirDropUtil.pem2der(cms_signed.pem())
 
         return signed_data
-
-    @staticmethod
-    def doubleSHA1Hash(toHash):
-        """
-        This method gets an array of strings as input and creates a double SHA-1 Hash formatted in BASE64 from it. 
-        It will return a comma seperated list of SHA-1 hashes in BASE64
-
-        :param toHash: An iterable which contains one or many str 
-        """
-
-        single_hashed = [SHA.new(to_hash.encode('utf-8')).digest() for to_hash in toHash]
-        double_hashed = [SHA.new(single).digest() for single in single_hashed]
-
-        double_hashed_base64 = [base64.b64encode(h).decode('utf-8') for h in double_hashed]
-        hash_string = ','.join(double_hashed_base64)
-
-        return hash_string
 
     @staticmethod
     def pem2der(s):
@@ -216,30 +198,34 @@ class AirDropUtil:
 
         return file_icon
 
-
     @staticmethod
     def get_ip_for_interface(interface_name, ipv6=False):
         """
         Get the ip address in IPv4 or IPv6 for a specific network interface
 
-        :param str interace_name: declares the network interface name for which the ip should be accessed
-        :param bool ipv6: Boolean indicating if the ipv6 address should be rertrieved
-        :return: (str ipaddress, byte ipaddress_bytes) returns a tuple with the ip address as a string and in bytes
+        :param str interface_name: declares the network interface name for which the ip should be accessed
+        :param bool ipv6: Boolean indicating if the ipv6 address should be retrieved
+        :return: IPv4Address or IPv6Address object or None
         """
-        addresses = netifaces.ifaddresses(interface_name)
 
-        if netifaces.AF_INET6 in addresses and ipv6:
-            # Use the normal ipv6 address
-            addr = addresses[netifaces.AF_INET6][0]['addr'].split('%')[0]
-            bytes_addr = ipaddress.IPv6Address(addr).packed
-        elif netifaces.AF_INET in addresses and not ipv6:
-            addr = addresses[netifaces.AF_INET][0]['addr']
-            bytes_addr = socket.inet_aton(addr)
-        else:
-            addr = None
-            bytes_addr = None
+        def get_interface_by_name(name):
+            for interface in ifaddr.get_adapters():
+                if interface.name == name:
+                    return interface
+            return None
 
-        return addr, bytes_addr
+        interface = get_interface_by_name(interface_name)
+
+        if interface is None:
+            return None
+
+        for ip in interface.ips:
+            if ip.is_IPv6 and ipv6:
+                return ipaddress.IPv6Address(ip.ip[0])  # first of (ip, flowinfo, scope_id) tuple
+            if ip.is_IPv4 and not ipv6:
+                return ipaddress.IPv4Address(ip.ip)
+
+        return None
 
     @staticmethod
     def write_debug(config, data, file_name):

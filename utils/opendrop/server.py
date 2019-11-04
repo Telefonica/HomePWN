@@ -34,43 +34,34 @@ import time
 from .util import AirDropUtil
 
 logger = logging.getLogger(__name__)
-devices = []
+
 
 class AirDropServer:
     """
     Announces an HTTPS AirDrop server in the local network via mDNS.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, callback=None):
         self.config = config
 
-        if self.config.legacy:
-            self.useIPv6 = False
-        else:
-            self.useIPv6 = True
-        self.ip_interface_name = self.config.interface
-
-        if self.useIPv6:
-            self.address_family = socket.AF_INET6
-            self.serveraddress = ('::', self.config.port)
-            self.ServerClass = HTTPServerV6
-        else:
-            self.address_family = socket.AF_INET
-            self.serveraddress = ('0.0.0.0', self.config.port)
-            self.ServerClass = HTTPServer
-
+        # Use IPv6
+        self.serveraddress = ('::', self.config.port)
+        self.ServerClass = HTTPServerV6
         self.ServerClass.allow_reuse_address = False
 
-        self.ip_addr, self.byte_address = AirDropUtil.get_ip_for_interface(self.ip_interface_name, ipv6=self.useIPv6)
+        self.ip_addr = AirDropUtil.get_ip_for_interface(self.config.interface, ipv6=True)
+        if self.ip_addr is None:
+            if self.config.interface is 'awdl0':
+                raise RuntimeError('Interface {} does not have an IPv6 address. '
+                                   'Make sure that `owl` is running.'.format(self.config.interface))
+            else:
+                raise RuntimeError('Interface {} does not have an IPv6 address'.format(self.config.interface))
 
         self.Handler = AirDropServerHandler
         self.Handler.config = self.config
-
-        if self.config.legacy:
-            self.zeroconf = Zeroconf()
-        else:
-            self.zeroconf = Zeroconf(interfaces=[self.ip_addr], ipv6_interface_name=self.ip_interface_name,
-                                     apple_mdns=True)
+        self.Handler.callback = callback
+        self.zeroconf = Zeroconf(interfaces=[self.ip_addr], ipv6_interface_name=self.config.interface,
+                                 apple_mdns=True)
 
         self.http_server = self._init_server()
         self.service_info = self._init_service()
@@ -81,13 +72,11 @@ class AirDropServer:
         service_name = self.config.service_id + '._airdrop._tcp.local.'
         info = ServiceInfo(
             '_airdrop._tcp.local.', service_name,
-            self.byte_address, self.config.port, 0, 0, properties, server)
+            self.ip_addr.packed, self.config.port, 0, 0, properties, server)
         return info
 
     def start_service(self):
-        logger.info('Announcing service: host {}, address {}, port {}'.format(self.config.host_name,
-                                                                              self.ip_addr, self.config.port))
-        print(f'Announcing service: host {self.config.host_name}, address {self.ip_addr}, port {self.config.port}')
+        print(f'Announcing services: host {self.config.host_name}, address {self.ip_addr}, port {self.config.port}, mail {self.config.email}, phone {self.config.phone}')
         self.zeroconf.register_service(self.service_info)
 
     def _init_server(self):
@@ -100,7 +89,7 @@ class AirDropServer:
             httpd = self.ServerClass(self.serveraddress, self.Handler)
 
         # Adapt socket for awdl0
-        if self.ip_interface_name == 'awdl0' and platform.system() == 'Darwin':
+        if self.config.interface == 'awdl0' and platform.system() == 'Darwin':
             httpd.socket.setsockopt(socket.SOL_SOCKET, 0x1104, 1)
 
         httpd.socket = self.config.get_ssl_context().wrap_socket(sock=httpd.socket, server_side=True)
@@ -109,7 +98,6 @@ class AirDropServer:
 
     def start_server(self):
         logger.info('Starting HTTPS server')
-        print('Starting HTTPS server')
         self.http_server.serve_forever()
 
     def stop(self):
@@ -118,19 +106,12 @@ class AirDropServer:
 
     def get_properties(self):
         properties = {b'flags': str(self.config.flags).encode('utf-8')}
-        if self.config.legacy:
-            properties[b'phash'] = AirDropUtil.doubleSHA1Hash(self.config.phone).encode('utf-8')
-            properties[b'nhash'] = False
-            properties[b'ehash'] = AirDropUtil.doubleSHA1Hash(self.config.email).encode('utf-8')
-            properties[b'cname'] = self.config.computer_name.encode('utf-8')
         return properties
 
 
 class HTTPServerV6(HTTPServer):
     address_family = socket.AF_INET6
 
-def get_devices():
-    return devices
 
 class AirDropServerHandler(BaseHTTPRequestHandler):
     """
@@ -138,6 +119,8 @@ class AirDropServerHandler(BaseHTTPRequestHandler):
     """
     protocol_version = 'HTTP/1.1'
     config = None
+    callback = None
+
 
     def _set_response(self, content_length):
         """
@@ -160,63 +143,36 @@ class AirDropServerHandler(BaseHTTPRequestHandler):
         Answer get requests
         """
         logger.debug('GET request at {}'.format(self.path))
-        print('GET request at {}'.format(self.path))
         body = '\n'.encode('utf-8')
         self._set_response(len(body))
         self.wfile.write(body)
 
-    def print_info(self, post_data):
-        #print ("[*] Found one..")
+    def alert_discovery(self, post_data):
         try:
             z = plistlib.loads(post_data, fmt=plistlib.FMT_BINARY)['SenderRecordData']
             result = re.search('<key>ValidatedPhoneHashes</key>(.*)</array>', str(z))
             rez = result.group(1)
             if rez:
                 rez = rez.replace("<array>",'').replace("<string>",'').replace("</string>",'').replace("\\n",'').replace("\\t",'')
-                # print (rez)
-                devices.append({"ip":self.client_address[0],"hash":rez, "phone":""})
+                self.callback(
+                    {"ip":self.client_address[0],"hash":rez, "phone":""}
+                )
+                
                 logger.debug("IPv6:{}\nPhone hash: {}".format(self.client_address[0],rez))
-        except:
-            # print("Error parsing device")
-            # print(post_data)
+        except Exception as e:
+            print(e)
             pass
-
 
     def handle_discover(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
+
+        self.alert_discovery(post_data)
         AirDropUtil.write_debug(self.config, post_data, 'receive_discover_request.plist')
-        # print("new device")
-        # print(post_data)
-        self.print_info(post_data)
+
         # sample media capabilities as recorded from macOS 10.13.3
         media_capabilities = {
             'Version': 1,
-            # don't advertise any codec/container support so we receive legacy file formats (JPEG instead of HEIF, etc.)
-            # 'Codecs': {
-            #     'hvc1': {
-            #         'Profiles': {
-            #             'VTPerProfileSupport': {
-            #                 '1': {'VTMaxPlaybackLevel': 120},
-            #                 '2': {'VTMaxPlaybackLevel': 120},
-            #                 '3': {}
-            #             },
-            #             'VTSupportedProfiles': [1, 2, 3]
-            #         }
-            #     }
-            # },
-            # 'ContainerFormats': {
-            #     'public.heif-standard': {
-            #         'HeifSubtypes': ['public.avci', 'public.heic', 'public.heif']
-            #     }
-            # },
-            # 'Vendor': {
-            #     'com.apple': {
-            #         'OSVersion': [10, 13, 3],
-            #         'OSBuildVersion': '17D102',
-            #         'LivePhotoFormatVersion': '1'
-            #     }
-            # }
         }
         media_capabilities_json = json.JSONEncoder().encode(media_capabilities)
         media_capabilities_binary = media_capabilities_json.encode('utf-8')
@@ -254,7 +210,6 @@ class AirDropServerHandler(BaseHTTPRequestHandler):
     def handle_upload(self):
         if self.headers.get('content-type', '').lower() != 'application/x-cpio':
             logger.warning('Unsupported content-type: {}'.format(self.headers.get('content-type')))
-            print('Unsupported content-type: {}'.format(self.headers.get('content-type')))
             self.send_response(406)  # Unprocessable Entity
             self.send_header('Content-Type', 'application/x-cpio')
             self.send_header('Content-Length', 0)
@@ -270,7 +225,6 @@ class AirDropServerHandler(BaseHTTPRequestHandler):
 
         if self.headers.get('transfer-encoding', '').lower() != 'chunked':
             logger.warning('Expect chunked transfer encoding')
-            print('Expect chunked transfer encoding')
             self.send_response(400)  # Bad Request
             self.send_header('Transfer-Encoding', 'Chunked')
             self.send_header('Content-Length', 0)
@@ -308,7 +262,6 @@ class AirDropServerHandler(BaseHTTPRequestHandler):
                 libarchive.extract.extract_entries(archive, flags)
 
         logger.info('Receiving file(s) ...')
-        print('Receiving file(s) ...')
         start = time.time()
         reader = HTTPChunkedReader(self.rfile)
         extract_stream(reader)
@@ -316,7 +269,6 @@ class AirDropServerHandler(BaseHTTPRequestHandler):
         transferred = reader.total / 1024.0 / 1024.0
         speed = transferred / (time.time() - start)
         logger.info('File(s) received (size {:.02f} MB, speed {:.02f} MB/s)'.format(transferred, speed))
-        print('File(s) received (size {:.02f} MB, speed {:.02f} MB/s)'.format(transferred, speed))
 
         self.send_response(200)
         self.send_header('Content-Length', 0)
@@ -327,11 +279,8 @@ class AirDropServerHandler(BaseHTTPRequestHandler):
         """
         Handle post requests
         """
-
         logger.debug('POST request at {}'.format(self.path))
-        print('POST request at {}'.format(self.path))
         logger.debug('Headers\n{}'.format(self.headers))
-        print('Headers\n{}'.format(self.headers))
 
         if self.path == '/Discover':
             self.handle_discover()

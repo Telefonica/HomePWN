@@ -46,19 +46,20 @@ class AirDropReceiverFlags:
 
 class AirDropConfig:
 
-    def __init__(self, host_name=None, computer_name=None, computer_model='OpenDrop', server_port=8771,
+    def __init__(self, host_name=None, computer_name=None, computer_model=None, server_port=8771,
                  airdrop_dir='~/.opendrop', service_id=None,
-                 email=None, phone=None, legacy=False, debug=False, interface=None):
+                 email=None, phone=None, debug=False, interface=None):
         self.airdrop_dir = os.path.expanduser(airdrop_dir)
 
         self.discovery_report = os.path.join(self.airdrop_dir, 'discover.last.json')
-        # computer_name='000977-08-2fa172e0-cfa7-49a8-b607-b9389ba894b6'
         if host_name is None:
             host_name = socket.gethostname()
         self.host_name = host_name
         if computer_name is None:
             computer_name = host_name
         self.computer_name = computer_name
+        if computer_model is None:
+            computer_model = 'OpenDrop'
         self.computer_model = computer_model
         self.port = server_port
 
@@ -69,12 +70,9 @@ class AirDropConfig:
         self.debug = debug
         self.debug_dir = os.path.join(self.airdrop_dir, 'debug')
 
-        self.legacy = legacy
-
         if interface is None:
-            interface = 'awdl0' if not self.legacy else 'en0'
+            interface = 'awdl0'
         self.interface = interface
-
         if email is None:
             email = []
         self.email = email
@@ -84,8 +82,7 @@ class AirDropConfig:
 
         # Bare minimum, we currently do not support anything else
         self.flags = AirDropReceiverFlags.SUPPORTS_MIXED_TYPES | AirDropReceiverFlags.SUPPORTS_DISCOVER_MAYBE
-
-        self.root_ca_file = resource_filename('utils.opendrop2', 'certs/apple_root_ca.pem')
+        self.root_ca_file = resource_filename('utils.opendrop', 'certs/apple_root_ca.pem')
         if not os.path.exists(self.root_ca_file):
             raise FileNotFoundError('Need Apple root CA certificate: {}'.format(self.root_ca_file))
 

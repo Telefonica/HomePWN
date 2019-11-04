@@ -43,6 +43,7 @@ class HomeModule(Module):
         random = str(self.args.get("random", "False")).lower() == "true"
         interval = int(self.args.get("interval", 10))
         dev_id = int(self.args.get("ble_iface", 0))
+        
         if random:
             left_speaker, right_speaker, case = self.random_values()
         else:

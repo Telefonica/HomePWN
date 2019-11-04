@@ -7,16 +7,16 @@ import sys
 import time
 import subprocess
 
-
-titles = ['Mac', 'State', 'Device', 'WI-FI', 'OS', 'Rssi']
-#titles = ['Mac', 'State', 'Device', 'WI-FI', 'OS', 'Header', 'Data', 'Rssi'] # debug
-
 class App(npyscreen.StandardApp):
 
     def __init__(self, airdrop, utils):
         super().__init__()
         self.airdrop = airdrop
         self.utils = utils
+        if(not utils.debug):
+            self.titles = ['Mac', 'State', 'Device', 'Airdrop', 'OS', 'Rssi']
+        else:
+            self.titles = ['Mac', 'State', 'Device', 'Airdrop', 'OS', 'Header', 'Data', 'Rssi', 'Packet']
 
     """Main class attach a new app with the given form name
     
@@ -34,11 +34,11 @@ class MyGrid(npyscreen.GridColTitles):
         npyscreen (GridColTitles): Type of grid col
     """
     def custom_print_cell(self, actual_cell, cell_display_value):
-        if 'Off' in cell_display_value or '<error>' in cell_display_value or 'iOS10' in cell_display_value or 'iOS11' in cell_display_value:
+        if 'Off' in cell_display_value or '<error>' in cell_display_value or 'iOS10' in cell_display_value or 'iOS11' in cell_display_value or 'iOS12' in cell_display_value:
             actual_cell.color = 'DANGER'
-        elif 'Home screen' in cell_display_value or 'On' in cell_display_value or cell_display_value[0:3] in '\n'.join(dev_types) or 'iOS12' in cell_display_value or 'X' in cell_display_value or 'Calling' in cell_display_value or cell_display_value in airpods_states.values() or 'WatchOS' in cell_display_value or 'Watch' in cell_display_value or 'iOS13' in cell_display_value or 'Connecting' in cell_display_value or 'WiFi screen' in cell_display_value or 'Homepod' in cell_display_value or 'iOS' in cell_display_value: 
+        elif 'Home screen' in cell_display_value or 'On' in cell_display_value or cell_display_value[0:3] in '\n'.join(dev_types) or 'macOS' in cell_display_value or 'X' in cell_display_value or 'Calling' in cell_display_value or cell_display_value in airpods_states.values() or 'WatchOS' in cell_display_value or 'Watch' in cell_display_value or 'iOS13' in cell_display_value or 'Connecting' in cell_display_value or 'WiFi screen' in cell_display_value or 'Homepod' in cell_display_value or 'iOS' in cell_display_value or 'Incoming' in cell_display_value or 'Outgoing' in cell_display_value: 
             actual_cell.color = 'GOOD'
-        elif 'Lock screen' in cell_display_value or '-' in cell_display_value:
+        elif 'Lock screen' in cell_display_value or '-' in cell_display_value or 'iOS12' in cell_display_value:
             actual_cell.color = 'CONTROL'
         else:
             actual_cell.color = 'DEFAULT'
@@ -59,7 +59,7 @@ class MainForm(npyscreen.FormBaseNew):
     def create(self):
         """Creates the main form of the Npyscreen
         """
-        global titles
+        titles = self.parentApp.titles
         new_handlers = {
             "^C": self.exit_func
         }
@@ -139,11 +139,14 @@ class MainForm(npyscreen.FormBaseNew):
         """
         self.clear_zombies()
         row = []
-        for phone, value in self.parentApp.utils.phones.items():
-            row.append([phone, value.get('state', "<unknown>"), value.get('device', "<unknown>"), value.get('wifi', "<unknown>"), 
-            value.get('os', "<unknown>"), value.get('rssi', "<unknown>")])
-            # row.append([phone, value.get('state', "<unknown>"), value.get('device', "<unknown>"), value.get('wifi', "<unknown>"), 
-            # value.get('os', "<unknown>"), value.get('header', "<unknown>"), value.get('data', "<unknown>"), value.get('rssi', "<unknown>")]) # debug
+        if(not self.parentApp.utils.debug):
+            for phone, value in self.parentApp.utils.phones.items():
+                row.append([phone, value.get('state', "<unknown>"), value.get('device', "<unknown>"), value.get('airdrop', "<unknown>"), 
+                value.get('os', "<unknown>"), value.get('rssi', "<unknown>")])
+        else:
+            for phone, value in self.parentApp.utils.phones.items():
+                row.append([phone, value.get('state', "<unknown>"), value.get('device', "<unknown>"), value.get('airdrop', "<unknown>"), 
+                value.get('os', "<unknown>"), value.get('header', "<unknown>"), value.get('data', "<unknown>"), value.get('rssi', "<unknown>"), (value.get('hash1', ""), value.get('hash2', ""))]) # debug
 
         return row
 
@@ -169,18 +172,20 @@ class MainForm(npyscreen.FormBaseNew):
         results = self.parentApp.utils.get_airdrop_devices()
         return self.print_results3(results)
 
-    def print_results3(self, data):
-        if not len(data):
+    def print_results3(self, devices):
+        if not len(devices):
             return ''
-        u_data = []
-        for dev in data:
-            if dev not in u_data:
-                u_data.append(dev)
+        
         x = PrettyTable()
         x.field_names = ["Name", "Host", "OS", "Discoverable", 'Address']
-        for dev in u_data:
-            x.add_row([dev['name'], dev['host'], dev['os'], dev['discoverable'], dev['address']])
+        for dev in devices:
+            x.add_row([dev.get('name', ''), dev.get('host', ''), dev.get('os', ''), dev.get('discoverable', ''), dev.get('address', '')])
         return x.get_string()
+
+    # def check_exist(self, new_devices, actual_devices):
+    #     ids = [dev.get('id') for dev in actual_devices]
+    #     devices_filtered = [dev for dev in new_devices if dev.get('id' not in ids)]
+    #     return devices_filtered
 
     # ------------ UTILS --------------------------
     def get_mac_val_from_cell(self):
@@ -202,7 +207,7 @@ class MainForm(npyscreen.FormBaseNew):
         return self.gd.values[self.gd.edit_cell[0]][5]
 
     def get_cell_name(self):
-        global titles
+        titles = self.parentApp.titles
         return titles[self.gd.edit_cell[1]]
 
     def upd_cell(self, argument):
@@ -212,15 +217,3 @@ class MainForm(npyscreen.FormBaseNew):
             thread2 = Thread(target=self.get_dev_name, args=(mac,))
             thread2.daemon = True
             thread2.start()
-        # disabled
-        # if cell == 'Phone':
-        #     if self.get_phone_val_from_cell() == 'X':
-        #         hashinfo = "Phone hash={}, email hash={}, AppleID hash={}, SSID hash={} ({})".format(
-        #             hash2phone[self.get_mac_val_from_cell()]['ph_hash'],
-        #             hash2phone[self.get_mac_val_from_cell()]['email_hash'],
-        #             hash2phone[self.get_mac_val_from_cell()]['appleID_hash'],
-        #             hash2phone[self.get_mac_val_from_cell()]['SSID_hash'],
-        #             get_dict_val(dictOfss, hash2phone[self.get_mac_val_from_cell()]['SSID_hash']))
-        #         table = print_results2(hash2phone[self.get_mac_val_from_cell()]['phone_info'])
-        #         rez = "{}\n\n{}".format(hashinfo, table)
-        #         npyscreen.notify_confirm(rez, title="Phone number info", wrap=True, wide=True, editw=0)

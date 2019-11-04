@@ -54,13 +54,13 @@ class HomeModule(Module):
         ssid = str(self.args.get("ssid", "False")).lower() == "true"
         airdrop = str(self.args.get("airdrop", "False")).lower() == "true"
         ttl = int(self.args.get("ttl", 10))
-        iwdev = str(self.args.get("iface", "wlan0"))
-        dev_id = int(self.args.get("hci", 0))
-        toggle_device(dev_id, True)
-        self.pr = multiprocessing.Process(target=self.read_state, 
-            args=(ssid, airdrop, ttl, iwdev, dev_id))
-
+        w_iface = str(self.args.get("iface", "wlan0"))
+        ble_iface = int(self.args.get("hci", 0))
         
+        toggle_device(ble_iface, True)
+
+        self.pr = multiprocessing.Process(target=self.read_state_cli, 
+            args=(ssid, airdrop, ttl, w_iface, ble_iface, False))
         try:
             self.pr.start()
             while True:
@@ -69,8 +69,9 @@ class HomeModule(Module):
             self.pr.terminate()
             print(f"Killing {self.pr.pid}")
             os.kill(self.pr.pid, signal.SIGTERM)
-
-    def read_state(self, ssid, airdrop, ttl, iwdev, dev_id):
+        
+    
+    def read_state_cli(self, ssid, airdrop, ttl, iwdev, dev_id, debug):
         """Read the state of the nearby Apple ble devices
         
         Args:
@@ -80,33 +81,26 @@ class HomeModule(Module):
             iwdev (str): Wifi interface
             dev_id (int): Bluetooth interface
         """
-        ble_utils = Ble_Apple_Utils(ssid, airdrop, ttl, iwdev, dev_id)
+        ble_utils = Ble_Apple_Utils(ssid, airdrop, ttl, dev_id, debug)
         if airdrop:
             try:
-                print_info("Configuring owl interface...")
+                print("Configuring owl interface...")
                 check_wifi_config(iwdev)
-                sleep(1.5) # time to wake up owl process
+                sleep(6) # time to wake up owl process
             except ModeMonitorException:
-                print_error("Error, mode monitor not suported in the given interface, press ctr+c to continue")
+                print("Error, mode monitor not suported in the given interface, press ctr+c to continue")
                 return
             except BadInterfaceException:
-                print_error("Error, inteface not found, press ctr+c to continue")
+                print("Error, inteface not found, press ctr+c to continue")
                 return
             except OwlException:
-                print_error("Error, there was a problem setting up owl, press ctr+c to continue, if not insalled --> https://github.com/seemoo-lab/owl.git")
+                print("Error, there was a problem setting up owl, press ctr+c to continue, if not insalled --> https://github.com/seemoo-lab/owl.git")
                 return
             except Exception as e:
-                print_error(f"Error, something went wrong configuring the interface, press ctr+c to continue --> {e}")
+                print(f"Error, something went wrong configuring the interface, press ctr+c to continue --> {e}")
                 return
 
-
         if ssid:
-            thread_ssid = Thread(target=ble_utils.get_ssids, args=())
-            thread_ssid.daemon = True
-            thread_ssid.start()
-
-        
-
             thread2 = Thread(target=ble_utils.start_listetninig, args=())
             thread2.daemon = True
             thread2.start()
