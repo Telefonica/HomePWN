@@ -83,7 +83,7 @@ class BLE:
 
     def _print_char(self, ch):
         print_info(f"<b>{ch.uuid.getCommonName()}</b>")
-        print_info(f"|_ uuid: {str(ch.uuid).split('-')[0]}")
+        print_info(f"|_ uuid: {ch.uuid}")
         handle = ch.handle
         print_info(f"|_ handle: {hex(handle)} ({handle})")
         if (ch.supportsRead()):
