@@ -29,7 +29,8 @@ class HomeModule(Module):
                    "type": Option.create(name="type", value="random", required=True, description='Device addr type'),
                    "uuid": Option.create(name="uuid",  required=True, description='Specific UUID for a characteristic'),
                    "data": Option.create(name="data", value="Test", required=True, description="Data to write"),
-                   "encode": Option.create(name="encode",  required=True, description='Choose data encode')
+                   "encode": Option.create(name="encode",  required=True, description='Choose data encode'),
+                   "iface": Option.create(name="iface", value=0, description='Ble iface index (default to 0 for hci0)')
                    }
 
         # Constructor of the parent class
@@ -53,8 +54,12 @@ class HomeModule(Module):
         data = self._transform_data(self.args["encode"], self.args["data"])
         subs = False
         conn = 0
+        try:
+            iface = int(self.args["iface"])
+        except:
+            iface = 0
         print_info(f"\nTrying to subscribe to {bmac}")
-        ble_device = BLE(self.args["bmac"], self.args["type"])
+        ble_device = BLE(self.args["bmac"], self.args["type"], iface)
         while True:
             wait = False
             try:

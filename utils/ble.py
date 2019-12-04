@@ -5,10 +5,11 @@ from utildata.ble_manufacturer import manufacturer
 
 class BLE:
 
-    def __init__(self, bmac, t):
+    def __init__(self, bmac, t, iface=0):
         self.device = None
         self.bmac = bmac
         self.type = t
+        self.iface = iface
 
     def get_peripheral_device(self):
         return self.device
@@ -16,7 +17,7 @@ class BLE:
     ## CONNECTION BEGIN
 
     def connect(self):
-       self.device = Peripheral(self.bmac, self.type)
+       self.device = Peripheral(self.bmac, self.type, self.iface)
        print_ok("connected")
 
     def disconnect(self):
@@ -150,8 +151,12 @@ class BLE:
 
 ## Scan class
 class Scan:
+
+    def __init__(self, iface=0):
+        self.iface = iface
+
     def scan_devices(self, delegate=DefaultDelegate, timeout=5):
-        devices = Scanner().withDelegate(delegate()).scan(timeout=timeout) 
+        devices = Scanner(self.iface).withDelegate(delegate()).scan(timeout=timeout) 
         return self._package_data_devices(devices)
 
   

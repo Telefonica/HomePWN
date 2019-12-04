@@ -17,7 +17,8 @@ class HomeModule(Module):
 
         # -----------name-----default_value--description--required?
         options = {"timeout": Option.create(name="timeout", value=5, required=True),
-                   "rssi": Option.create(name="rssi", description='dB signal to filter (min value, example -60)')}
+                   "rssi": Option.create(name="rssi", description='dB signal to filter (min value, example -60)'),
+                   "iface": Option.create(name="iface", value=0, description='Ble iface index (default to 0 for hci0)')}
 
         # Constructor of the parent class
         super(HomeModule, self).__init__(information, options)
@@ -27,9 +28,16 @@ class HomeModule(Module):
     def run(self):
         print("Searching BLE devices...\n")
         try:
-            timeout = int(self.args["timeout"])
+            timeout = int(self.args["timeout"])    
         except:
             timeout = 5
-        scan = Scan()
+            
+
+        try:
+            iface = int(self.args["iface"])
+        except:
+            iface = 0
+
+        scan = Scan(iface=iface)
         devices = scan.scan_devices(timeout=timeout)
         scan.show_devices(devices, self.args["rssi"])

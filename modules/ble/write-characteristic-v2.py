@@ -22,7 +22,8 @@ class HomeModule(Module):
                    "type": Option.create(name="type", value="random", required=True, description='Device addr type'),
                    "data": Option.create(name="data", value="Pwned", required=True, description="Data to write"),
                    "encode": Option.create(name="encode",  required=True, description='Choose data encode'),
-                   "wait": Option.create(name="wait", value=0, required=True, description='seconds to wait connected after writing')
+                   "wait": Option.create(name="wait", value=0, required=True, description='seconds to wait connected after writing'),
+                   "iface": Option.create(name="iface", value=0, description='Ble iface index (default to 0 for hci0)')
                    }
         
         # Constructor of the parent class
@@ -68,13 +69,17 @@ class HomeModule(Module):
     @is_root
     def run(self):
         bmac = self.args["bmac"]
+        try:
+            iface = int(self.args["iface"])
+        except:
+            iface = 0
         data = self._transform_data(self.args["encode"], self.args["data"])
         if not data:
             return
 
         attempt = 1
         success = False
-        ble_device = BLE(bmac, self.args["type"])
+        ble_device = BLE(bmac, self.args["type"], iface)
         while attempt <= 5 and not success:
             print_info(f"Trying to connect {bmac}. (Attempt: {attempt})")
             try:

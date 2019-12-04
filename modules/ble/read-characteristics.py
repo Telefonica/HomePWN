@@ -18,7 +18,8 @@ class HomeModule(Module):
         # -----------name-----default_value--description--required?
         options = {"bmac": Option.create(name="bmac", required=True),
                    "uuid": Option.create(name="uuid", description='Specific UUID for a characteristic'),
-                   "type": Option.create(name="type", value="random", required=True, description='Device addr type')
+                   "type": Option.create(name="type", value="random", required=True, description='Device addr type'),
+                   "iface": Option.create(name="iface", value=0, description='Ble iface index (default to 0 for hci0)')
                    }
 
         # Constructor of the parent class
@@ -32,7 +33,13 @@ class HomeModule(Module):
     # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
-        ble_device = BLE(self.args["bmac"], self.args["type"])
+
+        try:
+            iface = int(self.args["iface"])
+        except:
+            iface = 0
+
+        ble_device = BLE(self.args["bmac"], self.args["type"], iface)
 
         attempt = 1
         success = False
