@@ -37,3 +37,4 @@ python-uinput
 paho-mqtt
 shodan
 pyscard
+btlejack

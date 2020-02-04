@@ -122,6 +122,23 @@ class BLE:
         except:
             pass
 
+    def set_subscribe(self, uuid):
+        try:
+            characteristics = self.get_characteristics()
+            for ch in characteristics:
+                if ch.uuid == uuid:
+                    try:
+                        self.device.writeCharacteristic(ch.valHandle+1, str.encode("\x02\x00"))
+                    except Exception as e:
+                        print("Failed!")
+                        print(e)
+                    print_ok("Suscribed!")
+                       
+        except:
+            pass
+
+    
+
     def _is_writable(self, properties):
         return "WRITE" in properties
 

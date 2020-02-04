@@ -14,20 +14,17 @@ class HomeModule(Module):
 
     def __init__(self):
         information = {"Name": "BLE subscribe",
-                       "Description": "Running this module you will be able to receive notifications of a certain BLE device.",
+                       "Description": "Running this module you will be able to receive notifications when you write certain charactersitic",
                        "privileges": "root",
                        "OS": "Linux",
-                       "Author": "@josueencinar"}
+                       "Author": "@lucferbux"}
 
         # -----------name-----default_value--description--required?
-        options = {
-            'bmac': [None, 'Device address', True],
-            'type': ["random", "Device addr type", True]
-        }
 
         options = {"bmac": Option.create(name="bmac", required=True),
-                   "type": Option.create(name="type", value="random", required=True, description='Device addr type'),
-                   "uuid": Option.create(name="uuid",  required=True, description='Specific UUID for a characteristic'),
+                   "type": Option.create(name="type", value="random", required=True, description='Type of device addr'),
+                   "uuid-subscribe": Option.create(name="uuid",  required=True, description='Specific UUID for the subscribe characteristic'),
+                   "uuid-write": Option.create(name="uuid",  required=True, description='Specific UUID for the write characteristic'),
                    "data": Option.create(name="data", value="Test", required=True, description="Data to write"),
                    "encode": Option.create(name="encode",  required=True, description='Choose data encode'),
                    "iface": Option.create(name="iface", value=0, description='Ble iface index (default to 0 for hci0)')
@@ -45,49 +42,58 @@ class HomeModule(Module):
     # This function must be always implemented, it is called by the run option
     @is_root
     def run(self):
-        new_process_function(self._subscribe, name="Subscribe_ble")
+        #new_process_function(self._subscribe, name="Subscribe_ble")
+        self._subscribe()
 
 
     def _subscribe(self):
         #print_info(f"Trying to subscribe to {self.args['bmac']}")
-        bmac = self.args["bmac"]
+        device = self.args["bmac"]
         data = self._transform_data(self.args["encode"], self.args["data"])
+        type = self.args["type"]
+        uuid_subscribe = self.args["uuid-subscribe"]
+        uuid_write = self.args["uuid-write"]
         subs = False
-        conn = 0
         try:
             iface = int(self.args["iface"])
         except:
             iface = 0
-        print_info(f"\nTrying to subscribe to {bmac}")
-        ble_device = BLE(self.args["bmac"], self.args["type"], iface)
-        while True:
-            wait = False
+        print_info(f"\nTrying to subscribe to {device}")
+        ble_device = BLE(device, type, iface)
+        
+        for x in range(0, 6):
             try:
                 ble_device.connect()
                 print_ok("\nDevice connected...")
-                ble_device.set_subscribe(self.args["uuid"])
-                subs = True
-                wait = True
                 ble_device.set_delegate(HomeSecurityDelegate)
+                ble_device.set_subscribe(uuid_subscribe)
+                subs = True
+                break
             except KeyboardInterrupt:
                 print("Module Interrupted")
                 break
             except:
                 sleep(3)
-                conn += 1
-                if conn == 5:
-                    break
-                continue
-
-            if wait:
-                ble_device.subscribe()
-
+        
+        ble_device.write_data(data, uuid_write)
+        if subs:
+            while True:
+                try:
+                    if(ble_device.device.waitForNotifications(8.0)):
+                        break
+                    sleep(3)
+                except KeyboardInterrupt:
+                    print("Module Interrupted")
+                    return True
+                except:
+                    ble_device.disconnect()
+                
 
         print("")
         if subs:
-            print_error(f"Unsubscribed {self.args['bmac']}")
+            print_error(f"Unsubscribed {device}")
         else:
-            print_error(f"Unable to subscribe to {self.args['bmac']}")
+            print_error(f"Unable to subscribe to {device}")
 
 
     def _transform_data(self, encode, data):
@@ -108,4 +114,5 @@ class HomeSecurityDelegate(DefaultDelegate):
     def handleNotification(self, cHandle, data):
         print_info(f"A Notification was received from {cHandle}: ")
         print_info(f"|_ Hex: {binascii.b2a_hex(data)}")
-        print_info(f"|_ Ascii: {binascii.b2a_uu(data)}")
+        print_info(f"|_ Ascii: {data.decode('utf-8')}")
+

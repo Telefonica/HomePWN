@@ -72,6 +72,11 @@ Launch the application:
 > sudo python3 homePwn.py
 ```
 
+### Configure Alpha Card
+
+https://askubuntu.com/questions/1122095/install-alfa-awus036nha-driver-on-ubuntu-18-04-lts
+
+
 # Examples
 
 Here are some videos to see how the tool works.
