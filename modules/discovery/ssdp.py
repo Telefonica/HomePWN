@@ -108,13 +108,16 @@ class HomeModule(Module):
             print_error("No devices found")
         else:
             for device in devices:
-                ip = device.replace("http://","").split(":")[0]
-                if ip not in my_list:
-                    my_list.append(ip)
-                    response = requests.get(device)
-                    if response.status_code == 200:
-                        self._info_extract(response.text, ip)
-                        print("")
+                try:
+                    ip = device.replace("http://","").split(":")[0]
+                    if ip not in my_list:
+                        my_list.append(ip)
+                        response = requests.get(device)
+                        if response.status_code == 200:
+                            self._info_extract(response.text, ip)
+                            print("")
+                except:
+                    pass
     
     def _info_extract(self, data, ip):
         search = ["friendlyName", "manufacturer"]
