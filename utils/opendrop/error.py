@@ -1,2 +1,0 @@
-class ReceiverError(Exception):
-    pass
