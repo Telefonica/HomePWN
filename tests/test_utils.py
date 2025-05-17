@@ -97,11 +97,12 @@ def test_shell_options(load_get_command_parser):
     check_list(opts, module_opts, False)
 
 def check_list(opts, opts_list, in_list=True):
+    opts_set = set(opts)
     for op in opts_list:
         if in_list:
-            assert op in opts
+            assert op in opts_set, f"Element {op} not found in opts"
         else:
-            assert op not in opts
+            assert op not in opts_set, f"Element {op} unexpectedly found in opts"
 
 ## Check completer
 def test_autocomplete(load_get_command_parser):
